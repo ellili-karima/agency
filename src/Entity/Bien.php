@@ -45,12 +45,18 @@ class Bien
     #[ORM\Column(type: 'datetime')]
     private $dateconstruction;
 
-    #[ORM\OneToMany(mappedBy: 'idbien', targetEntity: Optionbien::class)]
-    private $optionbiens;
+    #[ORM\OneToMany(mappedBy: 'titre', targetEntity: Appointement::class)]
+    private $appointements;
 
+    #[ORM\OneToMany(mappedBy: 'bien', targetEntity: Photo::class)]
+    private $photos;
+
+   
     public function __construct()
     {
         $this->optionbiens = new ArrayCollection();
+        $this->appointements = new ArrayCollection();
+        $this->photos = new ArrayCollection();
     }
 
 
@@ -209,5 +215,66 @@ class Bien
         return $this;
     }
 
+    /**
+     * @return Collection<int, Appointement>
+     */
+    public function getAppointements(): Collection
+    {
+        return $this->appointements;
+    }
+
+    public function addAppointement(Appointement $appointement): self
+    {
+        if (!$this->appointements->contains($appointement)) {
+            $this->appointements[] = $appointement;
+            $appointement->setTitre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAppointement(Appointement $appointement): self
+    {
+        if ($this->appointements->removeElement($appointement)) {
+            // set the owning side to null (unless already changed)
+            if ($appointement->getTitre() === $this) {
+                $appointement->setTitre(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Photo>
+     */
+    public function getPhotos(): Collection
+    {
+        return $this->photos;
+    }
+
+    public function addPhoto(Photo $photo): self
+    {
+        if (!$this->photos->contains($photo)) {
+            $this->photos[] = $photo;
+            $photo->setBien($this);
+        }
+
+        return $this;
+    }
+
+    public function removePhoto(Photo $photo): self
+    {
+        if ($this->photos->removeElement($photo)) {
+            // set the owning side to null (unless already changed)
+            if ($photo->getBien() === $this) {
+                $photo->setBien(null);
+            }
+        }
+
+        return $this;
+    }
+
+    
    
 }

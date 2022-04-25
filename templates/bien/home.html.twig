@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container">
+    <div class='row'>
+        <div class='col-8'>
+            <h1>Bienvenue sur le site de notre agence immobilière</h1>
+            <p>Retrouvez tous les biens près de chez vous au meilleur prix</p>
+            {% if biens %}
+                {% for bien in biens %}
+                    <article>
+                        {{bien.titre}}
+                        {{bien.piece}}
+                        {{bien.surface}}
+                        {{bien.prix}}
+                        {{bien.transactiontype}}
+                        <a href=""><button>Voir plus</button></a>
+                    </article>   
+                {% endfor %}
+            {% else %}
+                <p>Il n'y a aucun bien enregistré</p>
+            {% endif %}
+            
+            
+        </div>
+        <div class='col-3'>
+            <aside>
+            </aside>
+        </div>
+    </div>
+
+</div>
+    
+
+    
+{% endblock %}

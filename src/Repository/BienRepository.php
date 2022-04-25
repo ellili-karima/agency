@@ -47,6 +47,26 @@ class BienRepository extends ServiceEntityRepository
         }
     }
 
+     /**
+     * Undocumented function
+     *
+     * @return Bien[]
+     */
+    public function getLast5(): array
+    {
+        // createQueryBuilder créé la requête sur la table sélectionnée par l'alias (b pour bien)
+        return $this->createQueryBuilder('b')
+                // orderBy ajoute le ORDER BY à la requête
+                ->orderBy('b.id', 'DESC')
+                // setMaxResults ajoute la LIMIT
+                ->setMaxResults(5)
+                ->getQuery()
+                ->getResult()
+                ;
+    }
+
+
+
     // /**
     //  * @return Bien[] Returns an array of Bien objects
     //  */

@@ -17,6 +17,9 @@ class Photo
     #[ORM\Column(type: 'string', length: 40)]
     private $photo;
 
+    #[ORM\ManyToOne(targetEntity: bien::class, inversedBy: 'photos')]
+    private $bien;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -30,6 +33,18 @@ class Photo
     public function setPhoto(string|File|null $photo): self
     {
         $this->photo = $photo;
+
+        return $this;
+    }
+
+    public function getBien(): ?bien
+    {
+        return $this->bien;
+    }
+
+    public function setBien(?bien $bien): self
+    {
+        $this->bien = $bien;
 
         return $this;
     }

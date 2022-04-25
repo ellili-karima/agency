@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bien index{% endblock %}
+
+{% block body %}
+    <h1>Bien index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Titre</th>
+                <th>Nbrepieces</th>
+                <th>Surface</th>
+                <th>Prix</th>
+                <th>Localisation</th>
+                <th>Type</th>
+                <th>Etage</th>
+                <th>Transactiontype</th>
+                <th>Description</th>
+                <th>Dateconstruction</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for bien in biens %}
+            <tr>
+                <td>{{ bien.id }}</td>
+                <td>{{ bien.titre }}</td>
+                <td>{{ bien.nbrepieces }}</td>
+                <td>{{ bien.surface }}</td>
+                <td>{{ bien.prix }}</td>
+                <td>{{ bien.localisation }}</td>
+                <td>{{ bien.type }}</td>
+                <td>{{ bien.etage }}</td>
+                <td>{{ bien.transactiontype }}</td>
+                <td>{{ bien.description }}</td>
+                <td>{{ bien.dateconstruction ? bien.dateconstruction|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_bien_show', {'id': bien.id}) }}">show</a>
+                    <a href="{{ path('app_bien_edit', {'id': bien.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="12">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_bien_new') }}">Create new</a>
+{% endblock %}
