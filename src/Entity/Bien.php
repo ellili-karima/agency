@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BienRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BienRepository::class)]
@@ -42,6 +44,15 @@ class Bien
 
     #[ORM\Column(type: 'datetime')]
     private $dateconstruction;
+
+    #[ORM\OneToMany(mappedBy: 'idbien', targetEntity: Optionbien::class)]
+    private $optionbiens;
+
+    public function __construct()
+    {
+        $this->optionbiens = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -167,4 +178,36 @@ class Bien
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Optionbien>
+     */
+    public function getOptionbiens(): Collection
+    {
+        return $this->optionbiens;
+    }
+
+    public function addOptionbien(Optionbien $optionbien): self
+    {
+        if (!$this->optionbiens->contains($optionbien)) {
+            $this->optionbiens[] = $optionbien;
+            $optionbien->setIdbien($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOptionbien(Optionbien $optionbien): self
+    {
+        if ($this->optionbiens->removeElement($optionbien)) {
+            // set the owning side to null (unless already changed)
+            if ($optionbien->getIdbien() === $this) {
+                $optionbien->setIdbien(null);
+            }
+        }
+
+        return $this;
+    }
+
+   
 }

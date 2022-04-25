@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\PhotoRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\PhotoRepository;
+use Symfony\Component\HttpFoundation\File\File;
 
 #[ORM\Entity(repositoryClass: PhotoRepository::class)]
 class Photo
@@ -21,12 +22,12 @@ class Photo
         return $this->id;
     }
 
-    public function getPhoto(): ?string
+    public function getPhoto(): string|File|null
     {
         return $this->photo;
     }
 
-    public function setPhoto(string $photo): self
+    public function setPhoto(string|File|null $photo): self
     {
         $this->photo = $photo;
 
