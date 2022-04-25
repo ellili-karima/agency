@@ -15,6 +15,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private $id;
 
+    private $nom;
+    private $prenom;
+    private $tel;
+
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private $email;
 
