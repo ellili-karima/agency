@@ -1,13 +1,37 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Bien{% endblock %}
+{% block title %}Editet ce Bien{% endblock %}
 
 {% block body %}
-    <h1>Edit Bien</h1>
+<div class="container">
+    <h1 class='text-center'>Modifier le Bien</h1>
 
-    {{ include('bien/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('bien/_form.html.twig', {'button_label': 'Modifier'}) }} 
 
-    <a href="{{ path('app_bien_index') }}">back to list</a>
+    <hr>
+    <table class="table text-center">
+    <tr>
+        
+        {% for photo in bien.photos %}
+             {% if not bien.photos is empty %}
+                    <td>
+                        <img src="{{ asset('img/biens/' ~ photo.photo) }}" alt="{{bien.titre}}" width='200px' height='200px'><br>
+                        <form method="post" action="{{ path('bien_update', {'id': bien.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ photo.id) }}">
+                            <button class="btn mt-3"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                        </form>
 
-    {{ include('bien/_delete_form.html.twig') }}
+                    </td>
+                           
+             {% endif %} 
+        {% endfor %}
+         </tr>  
+    </table>
+
+    <div>
+        {{ include('bien/_delete_form.html.twig') }} 
+    </div>
+ 
+</div>
+   
 {% endblock %}

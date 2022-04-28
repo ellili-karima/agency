@@ -3,10 +3,29 @@
 {% block body %}
 <div class="container">
     <div class='row'>
-        <div class='col-10'id='home'>
-            <h1 class='text-center'>Bienvenue sur le site de notre agence immobilière</h1>
-            <p class='text-center'>Retrouvez tous les biens près de chez vous au meilleur prix</p>
-          
+        <div class='col-12'>
+            <h1 class='text-center'>Retrouvez tous nos biens disponibles ici</h1>
+            <hr>
+            <div>
+            <table class="table-primary center">
+                
+                <tr>
+                    {{form_start(form)}}
+                        <td>{{form_row(form.minpiece)}}</td>
+                        <td>{{form_row(form.maxpiece)}}</td>
+                        <td>{{form_row(form.minsurface)}}</td>
+                        <td>{{form_row(form.maxsurface)}}</td>
+                        <td>{{form_row(form.minprix)}}</td>
+                        <td>{{form_row(form.maxprix)}}</td>
+                </tr>
+                <tr class="d-flex justify-content-center">
+                    <td><button type="submit" class='btn btn-primary w-100'>Filtrer</button></td>
+                    {{form_end(form)}}
+                </tr>
+            </table>
+            <hr>
+           
+            </div>
             <div class="d-flex flex-wrap">
                 {% if biens %}
                 {% for bien in biens %}
@@ -33,20 +52,7 @@
             
             
         </div>
-        <div class='col-2'>
-            <aside>
-            <h3>Notre agence:</h3>
-            <img src="{{asset('img/agence.jpg')}}" alt="">
-            <p>Vous pouvez nous retrouver tous les jours de <span class='fw-bold'>9h à 17h</span> au 1 rue de test 12345 TextVille ou nous contacter<br>
-            par mail:  contact@agency.fr<br> par téléphone: +33 123456789</p>
-            <hr>
-            <p><a href="">Appartement</a></p>
-            <p><a href="">Maison</a></p>
-            <p><a href="">Achat</a></p>
-            <p><a href="">Location</a></p>
-            
-            </aside>
-        </div>
+        
     </div>
 
 </div>

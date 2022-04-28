@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\BienRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Photo;
+use App\Entity\Appointement;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\BienRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: BienRepository::class)]
 class Bien
@@ -21,10 +23,10 @@ class Bien
     #[ORM\Column(type: 'integer')]
     private $nbrepieces;
 
-    #[ORM\Column(type: 'float')]
+    #[ORM\Column(type: 'integer')]
     private $surface;
 
-    #[ORM\Column(type: 'float')]
+    #[ORM\Column(type: 'integer')]
     private $prix;
 
     #[ORM\Column(type: 'string', length: 100)]
@@ -48,9 +50,14 @@ class Bien
     #[ORM\OneToMany(mappedBy: 'titre', targetEntity: Appointement::class)]
     private $appointements;
 
-    #[ORM\OneToMany(mappedBy: 'bien', targetEntity: Photo::class)]
+    
+    #[ORM\OneToMany(mappedBy: 'bien', targetEntity: Photo::class,  orphanRemoval: true, cascade:['persist'])]
     private $photos;
 
+    #[ORM\OneToMany(mappedBy: 'idbien', targetEntity: Optionbien::class)]
+    private $optionbiens;
+
+    
    
     public function __construct()
     {
@@ -89,24 +96,24 @@ class Bien
         return $this;
     }
 
-    public function getSurface(): ?float
+    public function getSurface(): ?int
     {
         return $this->surface;
     }
 
-    public function setSurface(float $surface): self
+    public function setSurface(int $surface): self
     {
         $this->surface = $surface;
 
         return $this;
     }
 
-    public function getPrix(): ?float
+    public function getPrix(): ?int
     {
         return $this->prix;
     }
 
-    public function setPrix(float $prix): self
+    public function setPrix(int $prix): self
     {
         $this->prix = $prix;
 
@@ -275,6 +282,27 @@ class Bien
         return $this;
     }
 
+
+    #[ORM\PostRemove]
+    public function deletePhoto(): void
+    {
+        // 1. On vérifie que le fichier existe
+        if (file_exists(__DIR__.'/../../public/img/biens/'. $this->photo)) {
+
+            // 2. On supprime le fichier
+            unlink(__DIR__.'/../../public/img/biens/'. $this->photo);
+        }
+        // 3. On indique quand utiliser cette méthode grâce aux évènements:
+        // #[ORM\HasLifecycleCallbacks]à ajouter sur la class
+        // #[ORM\PostRemove] à ajouter sur la méthode qui prend l'évènement
+
+    }
+    
+
+    public function __toString()
+    {
+        return $this->titre;
+    }
     
    
 }

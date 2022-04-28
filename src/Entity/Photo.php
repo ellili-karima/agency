@@ -17,7 +17,7 @@ class Photo
     #[ORM\Column(type: 'string', length: 40)]
     private $photo;
 
-    #[ORM\ManyToOne(targetEntity: bien::class, inversedBy: 'photos')]
+    #[ORM\ManyToOne(targetEntity: Bien::class, inversedBy: 'photos')]
     private $bien;
 
     public function getId(): ?int

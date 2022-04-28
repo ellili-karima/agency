@@ -1,0 +1,29 @@
+.btn{
+    width:120px;
+    background-color: rgb(97, 144, 245);
+    border-radius: 5px;
+    color:white;
+}
+#btn{
+    width:200px;
+}
+#bien_options{
+    display: flex ;
+    justify-content:space-around;
+}
+#photo_single{
+    width: 500px;
+    height: 400px;
+}
+#photo_biens{
+    width:300px;
+    height: 300px;
+}
+#home{
+    border-right: 2px solid black;
+}
+#option{
+    background-color: rgb(179, 81, 81);
+    color: rgb(85, 24, 24);
+    font-size: 20px;
+}

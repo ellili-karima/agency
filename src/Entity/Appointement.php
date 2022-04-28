@@ -16,7 +16,7 @@ class Appointement
     #[ORM\Column(type: 'datetime')]
     private $date;
 
-    #[ORM\ManyToOne(targetEntity: bien::class, inversedBy: 'appointements')]
+    #[ORM\ManyToOne(targetEntity: Bien::class, inversedBy: 'appointements')]
     private $titre;
 
     #[ORM\Column(type: 'string', length: 50)]

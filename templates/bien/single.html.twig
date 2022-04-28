@@ -3,9 +3,73 @@
 {% block title %}Bien{% endblock %}
 
 {% block body %}
-    <h1>Bien</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            {% if bien.photos %}
+                {% for photo in bien.photos %}
+                    <img src="{{ asset('img/biens/' ~ photo.photo) }}" alt="" id="photo_single"> 
+                {% endfor %} 
 
-    <table class="table">
+            {% else %}
+                <p>Ce bien n'a pas encore de photos</p>
+            {% endif %}
+            </div>
+                
+            <div class="col-6">
+                <h1 class='text-center'>Prendre rendez-vous pour visiter le bien</h1>
+                {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    <button class="btn">{{ button_label|default('Save') }}</button>
+                {{ form_end(form) }}
+                    
+            </div>
+        </div>
+    <hr>
+    <div class="row">
+        <div class="col-7">
+            <h3>{{ bien.titre }}</h3>
+            <p>{{ bien.description }}</p> 
+        </div>
+        <div class="col-5">
+            <strong>{{ bien.transactiontype }}</strong>
+            <p><strong>Type: </strong>{{ bien.type }}</p>
+            <p><strong>Surface: </strong>{{ bien.surface }} m2</p>
+            <p><strong>Nombre de pièces: </strong>{{ bien.nbrepieces}}</p>
+            <p><strong>Etage: </strong>{{ bien.etage}}</p>
+            <p><strong>Adresse:</strong> {{ bien.localisation }}</p>
+            <p><strong>Prix:</strong> {{ bien.prix }} €</p>
+            <p><strong>Date de construction: </strong>{{ bien.dateconstruction|date('d/m/Y')}}</p>
+            <p><strong class="d-flex">Liste des options:</strong></p>
+           {% if not bien.optionbiens is empty %}
+                {% for optionbien in bien.optionbiens %}
+                    <li>{{ optionbien.getIdoption.designation }}</li>
+                    
+                {% endfor %}
+            {% else %}
+            <div id="0_option">
+                <p>Ce logement n'a pas d'options.</p>
+            </div>
+                
+            {% endif %} 
+        </div>
+    
+    </div>
+
+
+
+
+
+
+
+
+    
+    {# <div class='text-center'>
+        {% for photo in bien.photos %}
+            <img src="{{ asset('img/biens/' ~ photo.photo) }}" alt="" width="200px"> 
+        {% endfor %} 
+    </div>
+    <table class="table" width="500">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -21,11 +85,11 @@
             </tr>
             <tr>
                 <th>Surface</th>
-                <td>{{ bien.surface }}</td>
+                <td>{{ bien.surface }} m2</td>
             </tr>
             <tr>
                 <th>Prix</th>
-                <td>{{ bien.prix }}</td>
+                <td>{{ bien.prix }} €</td>
             </tr>
             <tr>
                 <th>Localisation</th>
@@ -51,12 +115,20 @@
                 <th>Dateconstruction</th>
                 <td>{{ bien.dateconstruction ? bien.dateconstruction|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
+            <tr>
+                <th>Options</th>
+                <td> 
+                
+                
+                {# {% if not bien.options is empty %}
+                     {% for option in  bien.options.designation %}
+                    {{ option.designation}}  #}
+                 {# {% endfor %} 
+                {% endif %}  #}
+            {# </tr>
         </tbody>
-    </table>
+    </table> #}
 
-    <a href="{{ path('app_bien_index') }}">back to list</a>
+</div>
 
-    <a href="{{ path('app_bien_edit', {'id': bien.id}) }}">edit</a>
-
-    {{ include('bien/_delete_form.html.twig') }}
 {% endblock %}

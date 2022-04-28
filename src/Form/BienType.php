@@ -2,10 +2,14 @@
 
 namespace App\Form;
 
-use App\Entity\Bien;
+use App\Entity\Option;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class BienType extends AbstractType
 {
@@ -13,50 +17,53 @@ class BienType extends AbstractType
     {
         $builder
             ->add('titre', TextType::class, [
-                'label' => "Nom de la catégorie"
+                'label' => "Titre"
                 ])
-            ->add('nbrepieces' , integerType::class, [
+            ->add('nbrepieces' , TextType::class, [
                 'label' => "Nombre des piéces"
                 ])
-            ->add('surface',  FloatType::class, [
-                'label' => "Nom de la catégorie"
+            ->add('surface',  TextType::class, [
+                'label' => "Surface"
                 ])
-            ->add('prix',  FloatType::class, [
-                'label' => "Nom de la catégorie"
+            ->add('prix',  TextType::class, [
+                'label' => "Prix"
                 ])
             ->add('localisation',  TextType::class, [
-                'label' => "localisation du bien"
+                'label' => "localisation"
                 ])
             ->add('type',  TextType::class, [
-                'label' => "Type du bien"
+                'label' => "Type"
                 ])
-            ->add('etage',  integerType::class, [
+            ->add('etage',  TextType::class, [
                 'label' => "L'étage"
                 ])
             ->add('transactiontype',  TextType::class, [
-                'label' => "Nom de la catégorie"
+                'label' => "Transaction_type"
                 ])
             ->add('description', TextareaType::class, [
-                'label' => "Description du bien"
+                'label' => "Description"
             ])
             ->add('dateconstruction', DateType::class,[
                 'label' => "Date de construction"
             ])
-            ->add('photo', FileEntity::class, [
-                'label' => "Photo du bien",
+            ->add('photos', FileType::class,[
+                'label' => false,
+                'multiple' => true,
                 'mapped' => false,
                 'required' => false
             ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Ajouter'
-            ])
-        ;
+            ->add('options', EntityType::class, array(
+                 'class' => Option::class,
+                 'choice_label' => 'designation',
+                 'expanded' => true,
+                 'multiple' => true,
+                 'mapped' => false
+             ));
+            
+        
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => Bien::class,
-        ]);
-    }
+
+    
+
 }

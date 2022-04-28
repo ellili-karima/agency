@@ -13,10 +13,10 @@ class Optionbien
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\ManyToOne(targetEntity: bien::class, inversedBy: 'optionbiens')]
+    #[ORM\ManyToOne(targetEntity: Bien::class, inversedBy: 'option')]
     private $idbien;
 
-    #[ORM\ManyToOne(targetEntity: option::class, inversedBy: 'optionbiens')]
+    #[ORM\ManyToOne(targetEntity: Option::class, inversedBy: 'option')]
     private $idoption;
 
     public function getId(): ?int
