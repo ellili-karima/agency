@@ -33,12 +33,20 @@
 								<li class="nav-item">
 									<a class="nav-link" href="{{path('biens')}}">Nos biens</a>
 								</li>
+								{% if is_granted('ROLE_SUPERADMIN') %}
 								<li class="nav-item">
-									<a class="nav-link" href="#">Déconnexion</a>
+									<a class="nav-link" href="{{path('app_register')}}">Ajouter un emploié</a>
 								</li>
+								{% endif %}
+								{% if is_granted('ROLE_ADMIN') %}
 								<li class="nav-item">
-									<a class="nav-link">Connexion</a>
+									<a class="nav-link" href="{{path('app_logout')}}">Déconnexion</a>
 								</li>
+								{% else %}
+								<li class="nav-item">
+									<a class="nav-link" href="{{path('app_login')}}">Connexion</a>
+								</li>
+								{% endif %}
 							</ul>
 						</div>
 					</div>

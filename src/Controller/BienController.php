@@ -16,7 +16,6 @@ use App\Repository\AppointementRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class BienController extends AbstractController
@@ -33,16 +32,35 @@ class BienController extends AbstractController
     #[Route('/biens', name: 'biens')]
     public function search( ManagerRegistry $manager,BienRepository $repository, Request $request): Response
     {
+        //on définit le nombre d'éléments par page
+        $limit = 10;
+        //on récupere le numéro de la page
+        $page = (int)$request->query->get("page", 1);
         $data = new SearchData();
         $form = $this->createForm(SearchFormType::class, $data);
         $form->handleRequest($request);
+        $tri= '';
         if ($form->isSubmitted() && $form->isValid()) {
             $biens = $repository->findSearch($data);
         }
-        else{$biens = $manager->getRepository(Bien::class)->findAll();}
+        elseif ($tri) {
+            $biens = $repository->triBiens();
+        }
+        else{
+            // on récupere les biens de la page
+            $biens = $manager->getRepository(Bien::class)->getPaginatedBiens($page, $limit);
+            
+        }
+        // on récupere le nombre total du biens
+        $total = $repository->getTotalBiens();
+        
        
         return $this->render('search/biens.html.twig', [
             'biens' => $biens,
+            "total" => $total,
+            "limit" => $limit,
+            "page" => $page,
+            "tri" => $tri,
             'form' => $form->createView()
         ]);
     }
@@ -74,10 +92,6 @@ class BienController extends AbstractController
             $this->addFlash("danger", "Le bien demandé n'existe pas");
             return $this->redirectToRoute("accueil");
         }
-
-        
-
-       
     }
 
     #[Route('/bien/save', name: 'bien_save', methods:["GET", "POST"] )]
@@ -109,15 +123,27 @@ class BienController extends AbstractController
             $em = $manager->getManager();
             $em->persist($bien);
 
-            //on recuper le checkbox valided
-            $checked = $form->get('options')->getData();
-            foreach($checked as $option){
-                if($option==true){
-                    $optionbien= new Optionbien();
-                    $optionbien->setIdbien($bien);
-                    $optionbien->setIdoption($option);
-                    $em->persist($optionbien);                    }
-            }
+             // //on recupere le checkbox valide
+            // $checked = $form->get('options')->getData();
+            // //on recupere les options du bien
+            // $designation = $bien->getOptionbiens()->getValues();
+            // //on parcours la liste des checkbox du table option
+            // foreach($checked as $option){
+            //     //on parcours la liste de designation
+            //     foreach ($designation as $optionEx) {
+            //         if($optionEx->getIdoption()->getId() == $option->getId()){
+
+            //         }
+
+                     
+            //     }
+            //     if($option==true){
+            //         $optionbien= new Optionbien();
+            //         $optionbien->setIdbien($bien);
+            //         $optionbien->setIdoption($option);
+            //         $em->persist($optionbien);                  
+            //       }
+            // }
             
             $em->flush();
             $this->addFlash("success", "Le bien a été ajouté avec succés");
@@ -159,27 +185,16 @@ class BienController extends AbstractController
             $em = $manager->getManager();
             $em->persist($bien);
         
-            // //on recupere le checkbox valide
-            // $checked = $form->get('options')->getData();
-            // //on recupere les options du bien
-            // $designation = $bien->getOptionbiens()->getValues();
-            // //on parcours la liste des checkbox du table option
-            // foreach($checked as $option){
-            //     //on parcours la liste de designation
-            //     foreach ($designation as $optionEx) {
-            //         if($optionEx->getIdoption()->getId() == $option->getId()){
+            //on recuper le checkbox valided
+            $checked = $form->get('options')->getData();
+            foreach($checked as $option){
+                if($option==true){
+                    $optionbien= new Optionbien();
+                    $optionbien->setIdbien($bien);
+                    $optionbien->setIdoption($option);
+                    $em->persist($optionbien);                    }
+            }
 
-            //         }
-
-                     
-            //     }
-            //     if($option==true){
-            //         $optionbien= new Optionbien();
-            //         $optionbien->setIdbien($bien);
-            //         $optionbien->setIdoption($option);
-            //         $em->persist($optionbien);                  
-            //       }
-            // }
             $em->flush();
             $this->addFlash("success", "Le bien a été modifié avec succés");
 

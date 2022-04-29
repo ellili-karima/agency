@@ -7,7 +7,6 @@ use App\Data\SearchData;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
-use Knp\Component\Pager\PaginatorInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
@@ -20,7 +19,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
  */
 class BienRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry , PaginatorInterface $paginator)
+    public function __construct(ManagerRegistry $registry )
     {
         parent::__construct($registry, Bien::class);
     }
@@ -118,12 +117,61 @@ class BienRepository extends ServiceEntityRepository
 
         }
 
-        $qb = $qb->getQuery()->getResult();
-        return $this->paginator->paginate(
-            $qb,
-            1,
-            10
-        );
+        return $qb->getQuery()->getResult();
+         
+    }
+
+
+    
+
+    /**
+     * return les biens
+     *
+     * @param [type] $page
+     * @param [type] $limit
+     * @return void
+     */
+    public function getPaginatedBiens($page, $limit)
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->setFirstResult(($page * $limit) - $limit)
+            ->setMaxResults($limit)
+            ;
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Return number of bien
+     *
+     * @return void
+     */
+    public function getTotalBiens()
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->select('COUNT(b)')
+            ;
+            return $qb->getQuery()->getSingleScalarResult();
+    }
+
+
+    public function triBiens(){
+        $qb = $this->createQueryBuilder('b');
+        $tri = 'ASC';
+
+        if($tri)
+        {
+            $qb->select('b')
+                ->orderBy('b.nbrepieces', $tri) ;
+            $tri = 'ASC';
+        }
+        else{
+            $qb->select('b')
+            ->orderBy('b.nbrepieces', $tri) ;
+        $tri = 'DESC';
+        }
+
+        return $qb->getQuery()->getResult();
+
     }
 
     // /**

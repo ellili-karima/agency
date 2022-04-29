@@ -18,18 +18,27 @@
                         <td>{{form_row(form.minprix)}}</td>
                         <td>{{form_row(form.maxprix)}}</td>
                 </tr>
-                <tr class="d-flex justify-content-center">
-                    <td><button type="submit" class='btn btn-primary w-100'>Filtrer</button></td>
-                    {{form_end(form)}}
-                </tr>
             </table>
             <hr>
-           
+            <div>
+                <button type="submit" class='btn btn-primary w-100'>Filtrer</button>
+                {{form_end(form)}}
+            </div>
+            
+            <hr>
+            <div>
+            {% if tri == false %}<a href="?page={{tri}}"> h-piece</a>
+            {% else %} <a href="#">piece</a>
+            {% endif %}
+            
+                
+            </div>
+
             </div>
             <div class="d-flex flex-wrap">
                 {% if biens %}
                 {% for bien in biens %}
-                    <article class='center m-5 ps-2 pe-2 pb-2 border' style='width:320px;'>
+                    <article class='center m-5 ps-2 pe-2 pb-2 border' style='width:320px'>
                         {% if not bien.photos is empty %}
                             {% set firstphoto = bien.photos|first  %}
                             <img src="{{ asset('img/biens/' ~ firstphoto.photo) }}" alt="{{bien.titre}}" id="photo_biens"><br>
@@ -49,11 +58,27 @@
 
             </div>
             
-            
-            
         </div>
         
     </div>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="{{(page == 1) ? 'disabled' : ''}}">
+                <a class="page-link" href="{{ (page > 1) ? '?page=' ~ (page - 1) : '' }}"><i class="fa-solid fa-angles-left"></i></a>
+            </li>
+            {% for item in 1..((total / limit)|round(0, 'ceil')) %}
+                <li class="{{(page == item) ? 'active' : ''}}">
+                    <a href="?page={{ item }}">{{ item }}</a>
+                </li>  
+            {% endfor %} 
+            {% set pages = ((total / limit)|round(0, 'ceil')) %}
+            <li class="{{(page == pages) ? 'disabled' : ''}}">
+                <a class="page-link" href="{{ (page < 1) ? '?page=' ~ (page + 1) : '' }}"><i class="fa-solid fa-angles-right"></i></a>
+            </li>
+        </ul>
+    </nav>
+     
 
 </div>
     
