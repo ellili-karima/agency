@@ -37,6 +37,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
+    #[ORM\ManyToOne(targetEntity: Role::class, inversedBy: 'users')]
+    private $role;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -141,5 +144,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->isVerified = $isVerified;
 
         return $this;
+    }
+
+    public function getRole(): ?role
+    {
+        return $this->role;
+    }
+
+    public function setRole(?role $role): self
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->roles;
     }
 }
