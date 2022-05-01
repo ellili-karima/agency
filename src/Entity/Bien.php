@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\User;
 use App\Entity\Photo;
 use App\Entity\Appointement;
 use Doctrine\ORM\Mapping as ORM;
@@ -56,6 +57,9 @@ class Bien
 
     #[ORM\OneToMany(mappedBy: 'idbien', targetEntity: Optionbien::class)]
     private $optionbiens;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'biens')]
+    private $employeur;
 
     
    
@@ -299,9 +303,21 @@ class Bien
     }
     
 
-    public function __toString()
+    // public function __toString()
+    // {
+    //     return $this->titre;
+    // }
+
+    public function getEmployeur(): ?user
     {
-        return $this->titre;
+        return $this->employeur;
+    }
+
+    public function setEmployeur(?user $employeur): self
+    {
+        $this->employeur = $employeur;
+
+        return $this;
     }
     
    

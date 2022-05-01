@@ -40,10 +40,7 @@ class AppointementType extends AbstractType
                 'attr' => ['placeholder' => 'Téléphone']
             ])
             ->add('date', DateTimeType::class, [
-                'placeholder' => [
-                    'year' => 'Year' , 'month' => 'Month' , 'day' => 'Day',
-                    'hour' => 'Hour' , 'minute' => 'Munite' , 'second' => 'Second'
-                ]
+                'label' => "Date de rendez-vous"
                 ])
             
         ;

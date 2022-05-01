@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
@@ -32,14 +34,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $prenom;
 
-    
 
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
-    #[ORM\ManyToOne(targetEntity: Role::class, inversedBy: 'users')]
-    private $role;
+    #[ORM\OneToMany(mappedBy: 'employeur', targetEntity: Bien::class)]
+    private $biens;
 
+    public function __construct()
+    {
+        $this->biens = new ArrayCollection();
+    }
+
+   
     public function getId(): ?int
     {
         return $this->id;
@@ -74,9 +81,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[]= 'ROLE_USER';
 
         return array_unique($roles);
+      
+
     }
 
     public function setRoles(array $roles): self
@@ -146,20 +155,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getRole(): ?role
-    {
-        return $this->role;
-    }
-
-    public function setRole(?role $role): self
-    {
-        $this->role = $role;
-
-        return $this;
-    }
 
     public function __toString()
     {
         return $this->roles;
+    }
+
+    /**
+     * @return Collection<int, Bien>
+     */
+    public function getBiens(): Collection
+    {
+        return $this->biens;
+    }
+
+    public function addBien(Bien $bien): self
+    {
+        if (!$this->biens->contains($bien)) {
+            $this->biens[] = $bien;
+            $bien->setEmployeur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBien(Bien $bien): self
+    {
+        if ($this->biens->removeElement($bien)) {
+            // set the owning side to null (unless already changed)
+            if ($bien->getEmployeur() === $this) {
+                $bien->setEmployeur(null);
+            }
+        }
+
+        return $this;
     }
 }

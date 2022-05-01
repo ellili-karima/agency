@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\User;
 use App\Entity\Option;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -58,7 +59,11 @@ class BienType extends AbstractType
                  'expanded' => true,
                  'multiple' => true,
                  'mapped' => false
-             ));
+             ))
+            ->add('employeur', EntityType::class, array(
+                'class' => User::class,
+                'choice_label' => 'id'
+            ));
             
         
     }

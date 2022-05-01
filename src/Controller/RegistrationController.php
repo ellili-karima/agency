@@ -30,18 +30,13 @@ class RegistrationController extends AbstractController
 
     
     #[Route('/register', name: 'app_register')]
-    #[IsGranted(data:'ROLE_SUPERADMIN', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
+    // #[IsGranted(data:'ROLE_SUPERADMIN', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
-        $role = new Role();
-        
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
-        dump($form);
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setRoles->roleValeur();
-
             // encode the plain password
             $user->setPassword(
             $userPasswordHasher->hashPassword(

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Bien;
+use App\Entity\User;
 use App\Data\SearchData;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\OptimisticLockException;
@@ -147,18 +148,60 @@ class BienRepository extends ServiceEntityRepository
      */
     public function getTotalBiens()
     {
-        $qb = $this->createQueryBuilder('b')
-            ->select('COUNT(b)')
-            ;
-            return $qb->getQuery()->getSingleScalarResult();
+        // $a="A louer";
+            $qb = $this->createQueryBuilder('b')
+                ->select('COUNT(b)')
+                // ->andWhere('b.transactiontype = :val')
+                // ->setParameter('val', $a)
+                ;
+                return $qb->getQuery()->getSingleScalarResult();
+           
     }
 
+    /**
+     * Return number of bien
+     *
+     * @return void
+     */
+    public function getBiensAlouer()
+    {
+        $a="A louer";
+            $qb = $this->createQueryBuilder('b')
+                ->select('COUNT(b)')
+                ->andWhere('b.transactiontype = :val')
+                ->setParameter('val', $a)
+                ;
+                return $qb->getQuery()->getSingleScalarResult();
+           
+    }
 
-    public function triBiens(){
+      /**
+     * Return number of bien
+     *
+     * @return void
+     */
+    public function getBiensAvendre()
+    {
+        $a="A vendre";
+            $qb = $this->createQueryBuilder('b')
+                ->select('COUNT(b)')
+                ->andWhere('b.transactiontype = :val')
+                ->setParameter('val', $a)
+                ;
+                return $qb->getQuery()->getSingleScalarResult();
+           
+    }
+
+    /**
+     * fonction pour faire le tri par nombre des pieces des biens
+     *
+     * @return void
+     */
+    public function triPieces(string $tri){
         $qb = $this->createQueryBuilder('b');
-        $tri = 'ASC';
+        
 
-        if($tri)
+        if($tri == 'DESC')
         {
             $qb->select('b')
                 ->orderBy('b.nbrepieces', $tri) ;
@@ -167,11 +210,149 @@ class BienRepository extends ServiceEntityRepository
         else{
             $qb->select('b')
             ->orderBy('b.nbrepieces', $tri) ;
-        $tri = 'DESC';
+            $tri = 'DESC';
         }
 
         return $qb->getQuery()->getResult();
 
+    }
+
+    /**
+     * fonction pour faire le tri par la surface des biens
+     *
+     * @return void
+     */
+    public function triSurfaces(string $tri){
+        $qb = $this->createQueryBuilder('b');
+        
+
+        if($tri == 'DESC')
+        {
+            $qb->select('b')
+                ->orderBy('b.surface', $tri) ;
+            $tri = 'ASC';
+        }
+        else{
+            $qb->select('b')
+            ->orderBy('b.surface', $tri) ;
+            $tri = 'DESC';
+        }
+
+        return $qb->getQuery()->getResult();
+
+    }
+
+    /**
+     * fonction pour faire le tri par la surface des biens
+     *
+     * @return void
+     */
+    public function triPri(string $tri){
+        $qb = $this->createQueryBuilder('b');
+        
+
+        if($tri == 'DESC')
+        {
+            $qb->select('b')
+                ->orderBy('b.prix', $tri) ;
+            $tri = 'ASC';
+        }
+        else{
+            $qb->select('b')
+            ->orderBy('b.prix', $tri) ;
+            $tri = 'DESC';
+        }
+
+        return $qb->getQuery()->getResult();
+
+    }
+
+    /**
+     * fonction pour faire le tri par la surface des biens
+     *
+     * @return void
+     */
+    public function triSurface(string $ordre){
+        $qb = $this->createQueryBuilder('b');
+        
+
+        if($ordre == 'DESC')
+        {
+            $qb->select('b')
+                ->orderBy('b.surface', $ordre) ;
+            $ordre = 'ASC';
+        }
+        else{
+            $qb->select('b')
+            ->orderBy('b.surface', $ordre) ;
+            $ordre = 'DESC';
+        }
+
+        return $qb->getQuery()->getResult();
+
+    }
+
+    /**
+     * fonction pour faire le tri par le prix des biens
+     *
+     * @return void
+     */
+    public function triPrix(string $prixordre){
+        $qb = $this->createQueryBuilder('b');
+        
+
+        if($prixordre == 'DESC')
+        {
+            $qb->select('b')
+                ->orderBy('b.prix', $prixordre) ;
+            $prixordre = 'ASC';
+        }
+        else{
+            $qb->select('b')
+            ->orderBy('b.prix', $prixordre) ;
+            $prixordre = 'DESC';
+        }
+
+        return $qb->getQuery()->getResult();
+
+    }
+
+    /**
+     * function filtre les biens par type ou par type de transaction
+     *@return array
+     */
+    public function getfiltre(string $recherche): array
+    {
+        $query = $this->createQueryBuilder('b');
+
+        if ($recherche == 'Appartement') {
+            $query->andWhere('b.type = :type')
+                ->setParameter('type', $recherche);
+        }
+        if ($recherche == 'Maison') {
+            $query->andWhere('b.type = :type')
+                ->setParameter('type', $recherche);
+        }
+        if ($recherche == 'Location') {
+            $query->andWhere('b.transactiontype = :type')
+                ->setParameter('type', $recherche);
+        }
+        if ($recherche == 'Vente') {
+            $query->andWhere('b.transactiontype = :type')
+                ->setParameter('type', $recherche);
+        }
+        return $query->getQuery()->getResult();
+    }
+
+
+    public function getBiensUser(User $user): array
+    {
+        
+        $query = $this->createQueryBuilder('b')
+            ->andWhere('b.employeur = :val')
+            ->setParameter('val', $user->getId())
+            ;
+        return $query->getQuery()->getResult();
     }
 
     // /**

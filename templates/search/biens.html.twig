@@ -18,23 +18,57 @@
                         <td>{{form_row(form.minprix)}}</td>
                         <td>{{form_row(form.maxprix)}}</td>
                 </tr>
+                <tr class='text-center'>
+                    <td><button type="submit" class='btn btn-primary w-100'>Filtrer</button></td>
+                </tr>
+                    {{form_end(form)}}
             </table>
             <hr>
             <div>
-                <button type="submit" class='btn btn-primary w-100'>Filtrer</button>
-                {{form_end(form)}}
+                
             </div>
             
             <hr>
             <div>
-            {% if tri == false %}<a href="?page={{tri}}"> h-piece</a>
-            {% else %} <a href="#">piece</a>
-            {% endif %}
+            <p>Le nombre les biens disponibles est: <strong>{{biensAlouer + biensAvendre}}</strong></p>
+            </div>
             
-                
-            </div>
+            <table class='table text-center'>
+                <tr>
+                    <th>
+                        {% if tri == 'DESC' %}
+                            <a href="?tri=ASC"><i class="fa-solid fa-arrow-down"></i> Pièces</a>
+                        {% elseif tri == 'ASC' %}
+                            <a href="?tri=DESC"><i class="fa-solid fa-arrow-up"></i> Pièces</a> 
+                        {% else %}
+                            <a href="?tri=DESC"><i class="fa-solid fa-arrows-from-line"></i> Pièces</a>
+                        {% endif %}
+                    </th>
 
-            </div>
+                    <th>
+                        {% if ordre == 'DESC' %}
+                            <a href="?ordre=ASC"><i class="fa-solid fa-arrow-down"></i> Surfaces</a>
+                        {% elseif ordre == 'ASC' %}
+                            <a href="?ordre=DESC"><i class="fa-solid fa-arrow-up"></i> Surfaces</a> 
+                        {% else %}
+                            <a href="?ordre=DESC"><i class="fa-solid fa-arrows-from-line"></i> Surfaces</a>
+                        {% endif %}
+                    </th>
+
+                    <th>
+                        {% if prixordre == 'DESC' %}
+                            <a href="?prixordre=ASC"><i class="fa-solid fa-arrow-down"></i> Prix</a>
+                        {% elseif prixordre == 'ASC' %}
+                            <a href="?prixordre=DESC"><i class="fa-solid fa-arrow-up"></i> Prix</a> 
+                        {% else %}
+                            <a href="?prixordre=DESC"><i class="fa-solid fa-arrows-from-line"></i> Prix</a>
+                        {% endif %}
+                    </th>
+                </tr>
+            </table>
+            
+            
+            <hr>
             <div class="d-flex flex-wrap">
                 {% if biens %}
                 {% for bien in biens %}

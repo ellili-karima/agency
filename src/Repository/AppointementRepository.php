@@ -2,11 +2,13 @@
 
 namespace App\Repository;
 
+use App\Entity\Bien;
+use App\Entity\User;
 use App\Entity\Appointement;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Appointement>
@@ -45,6 +47,16 @@ class AppointementRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+
+    public function getAppointement(User $user){
+         
+        $query = $this->createQueryBuilder('a')
+            ->join('a.titre', 'b')
+            ->andWhere('b.employeur = :val')
+            ->setParameter('val', $user->getId());
+            ;
+        return $query->getQuery()->getResult();
     }
 
     // /**

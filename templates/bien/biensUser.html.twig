@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<div class='container'>
+		<div class='row'>
+			<div class='col-12'>
+				{% if app.user.id %}
+					<div class='text-end mb-5'>
+						<i class="fa-solid fa-user"></i>{{employeur}}
+                    </div>
+                    <hr>
+                    <div class='text-center mb-5'>
+                        <a href="{{path('bien_save')}}"><button class='btn' id="btn_ajouter">Ajouter un bien</button></a>
+                    </div>
+					<div class="d-flex flex-wrap">
+						<table class='table text-center'>
+							<tr>
+								<th>Image</th>
+								<th>Titre</th>
+								<th>Pièces</th>
+								<th>Surface</th>
+								<th>Prix</th>
+								<th>Localisation</th>
+								<th>Type</th>
+								<th>Etage</th>
+								<th>Transaction Type</th>
+								<th>Description</th>
+								<th>Date de construction</th>
+								<th>Options</th>
+							</tr>
+							{% if biens %}
+								{% for bien in biens %}
+									<tr>
+										<td>
+											{% if not bien.photos is empty %}
+												{% set firstphoto = bien.photos|first  %}
+												<img src="{{ asset('img/biens/' ~ firstphoto.photo) }}" alt="{{bien.titre}}" id="photo_biens_user" width='150px'><br>
+											{% endif %}
+										</td>
+										<td>{{bien.titre}}</td>
+										<td>{{bien.nbrepieces}}</td>
+										<td>{{bien.surface}}</td>
+										<td>{{bien.prix}}</td>
+										<td>{{bien.localisation}}</td>
+										<td>{{bien.type}}</td>
+										<td>{{bien.etage}}</td>
+										<td>{{bien.transactiontype}}</td>
+										<td>{{bien.description}}</td>
+										<td>{{bien.dateconstruction|date('d/m/Y')}}</td>
+										<td>
+											<ul>
+												<li class='mb-2'>
+													<a href="{{path('bien_update', {id: bien.id})}}">
+														<button class='btn'>Modifier</button>
+													</a>
+												</li>
+												<li>
+													<a href="{{path('bien_delete', {id: bien.id})}}">
+														<button class='btn' id=''>Supprimer</button>
+													</a>
+												</li>
+											</ul>
+										</td>
+									</tr>
+								{% endfor %}
+							{% endif %}
+						</table>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+	{% endif %}
+
+{% endblock %}
