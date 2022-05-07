@@ -3,10 +3,11 @@
 namespace App\Controller;
 
 
-use App\Entity\Role;
+
 use App\Entity\User;
 use App\Security\EmailVerifier;
 use App\Form\RegistrationFormType;
+use App\Repository\UserRepository;
 use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -17,6 +18,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
@@ -30,7 +32,7 @@ class RegistrationController extends AbstractController
 
     
     #[Route('/register', name: 'app_register')]
-    // #[IsGranted(data:'ROLE_SUPERADMIN', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
+    #[IsGranted(data:'ROLE_ADMIN', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
@@ -85,4 +87,35 @@ class RegistrationController extends AbstractController
 
         return $this->redirectToRoute('app_register');
     }
+
+    #[Route('/register/{id}/update', name: "user_update",methods: ['GET', 'POST'], requirements: ['id' => "[0-9]+"])]
+    #[IsGranted(data:'ROLE_ADMIN', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
+    public function update(User $user, UserRepository $userRepository,Request $request): Response
+    {
+        
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // je recupere les informations du user pour les inserer dans le formulaire de l'update
+            $userRepository->add($user);
+
+            return $this->redirectToRoute('accueil');
+        }
+
+        return $this->render('registration/register.html.twig', [
+            'registrationForm' => $form->createView(),
+        ]);
+    }
+    
+    #[Route('/employeurs/{id}/delete', name: "user_delete",methods: ['POST'], requirements: ['id' => "[0-9]+"])]
+    public function delete(Request $request, User $user, UserRepository $userRepository)
+    {
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
+            $userRepository->remove($user);
+        }
+
+        return $this->redirectToRoute('employeurs', [], Response::HTTP_SEE_OTHER);
+       
+    }
+
 }

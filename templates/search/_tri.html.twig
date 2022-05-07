@@ -1,0 +1,33 @@
+<table class='table text-center'>
+    <tr>
+        <th>
+            {% if triPieces == 'DESC' %}
+                <a href="?triPieces=ASC"><i class="fa-solid fa-caret-down"></i> Pièces</a>
+            {% elseif triPieces == 'ASC' %}
+                <a href="?triPieces=DESC"><i class="fa-solid fa-caret-up"></i> Pièces</a> 
+            {% else %}
+                <a href="?triPieces=DESC"><i class="fa-solid fa-sort"></i> Pièces</a>
+            {% endif %}
+        </th>
+
+        <th>
+            {% if triSurfaces == 'DESC' %}
+                <a href="?triSurfaces=ASC"><i class="fa-solid fa-caret-down"></i> Surfaces</a>
+            {% elseif triSurfaces == 'ASC' %}
+                <a href="?triSurfaces=DESC"><i class="fa-solid fa-caret-up"></i> Surfaces</a> 
+            {% else %}
+                <a href="?triSurfaces=DESC"><i class="fa-solid fa-sort"></i> Surfaces</a>
+            {% endif %}
+        </th>
+
+        <th>
+            {% if triPrix == 'DESC' %}
+                <a href="?triPrix=ASC"><i class="fa-solid fa-caret-down"></i> Prix</a>
+            {% elseif triPrix  == 'ASC' %}
+                <a href="?triPrix=DESC"><i class="fa-solid fa-caret-up"></i> Prix</a> 
+            {% else %}
+                <a href="?triPrix=DESC"><i class="fa-solid fa-sort"></i> Prix</a>
+            {% endif %}
+        </th>
+    </tr>
+</table>

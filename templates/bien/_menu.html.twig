@@ -1,0 +1,22 @@
+<div class='col-2 bg-light text-dark'>
+	<h4 class='mt-5'>Agence</h4><br>
+	<h5>Gestion</h5>
+	<div class='mb-5'>
+		<a href="?administration=Biens">
+			<i class="fa-solid fa-house-chimney"></i>
+			Biens immobiliers</a>
+		<br>
+		<a href="?administration=Appointement">
+			<i class="fa-solid fa-calendar"></i>
+			Rendez-vous</a>
+	</div>
+	{% if is_granted('ROLE_ADMIN') %}
+		<h5>Administration</h5>
+		<div>
+			<a href="?administration=Employés">
+				<i class="fa-solid fa-user"></i>
+				Employés</a>
+		</div>
+	{% endif %}
+
+</div>

@@ -1,0 +1,16 @@
+<table class="table-primary center">
+                
+                        <tr>
+                            {{form_start(form)}}
+                                <td>{{form_row(form.minpiece)}}</td>
+                                <td>{{form_row(form.maxpiece)}}</td>
+                                <td>{{form_row(form.minsurface)}}</td>
+                                <td>{{form_row(form.maxsurface)}}</td>
+                                <td>{{form_row(form.minprix)}}</td>
+                                <td>{{form_row(form.maxprix)}}</td>
+                        </tr>
+                        <tr class='text-center'>
+                            <td><button type="submit" class='btn btn-primary w-100'>Filtrer</button></td>
+                        </tr>
+                            {{form_end(form)}}
+                    </table>

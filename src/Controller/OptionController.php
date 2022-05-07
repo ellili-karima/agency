@@ -17,10 +17,18 @@ class OptionController extends AbstractController
     public function index(OptionRepository $optionRepository): Response
     {
         return $this->render('option/index.html.twig', [
+            //retourne la listes des options
             'options' => $optionRepository->findAll(),
         ]);
     }
 
+    /**
+     * fonction retourne un formulaire pour l'ajout d'option
+     *
+     * @param Request $request
+     * @param OptionRepository $optionRepository
+     * @return Response
+     */
     #[Route('/new', name: 'app_option_new', methods: ['GET', 'POST'])]
     public function new(Request $request, OptionRepository $optionRepository): Response
     {
@@ -71,6 +79,6 @@ class OptionController extends AbstractController
             $optionRepository->remove($option);
         }
 
-        return $this->redirectToRoute('app_option_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('bienuser', [], Response::HTTP_SEE_OTHER);
     }
 }

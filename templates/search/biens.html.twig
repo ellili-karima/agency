@@ -1,121 +1,40 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div class="container">
-    <div class='row'>
-        <div class='col-12'>
-            <h1 class='text-center'>Retrouvez tous nos biens disponibles ici</h1>
-            <hr>
-            <div>
-            <table class="table-primary center">
-                
-                <tr>
-                    {{form_start(form)}}
-                        <td>{{form_row(form.minpiece)}}</td>
-                        <td>{{form_row(form.maxpiece)}}</td>
-                        <td>{{form_row(form.minsurface)}}</td>
-                        <td>{{form_row(form.maxsurface)}}</td>
-                        <td>{{form_row(form.minprix)}}</td>
-                        <td>{{form_row(form.maxprix)}}</td>
-                </tr>
-                <tr class='text-center'>
-                    <td><button type="submit" class='btn btn-primary w-100'>Filtrer</button></td>
-                </tr>
-                    {{form_end(form)}}
-            </table>
-            <hr>
-            <div>
-                
+    <div class="container">
+        <div class='row'>
+            <div class='col-12'>
+                <h1 class='text-center'>Retrouvez tous nos biens disponibles ici</h1>
+                <hr>
+                <div>
+                    {{ include('search/_filtre.html.twig') }}
+                    <hr>
+                    <div>
+                        <p>Nombre des biens disponibles: <strong id='nbr'>{{biensAlouer + biensAvendre}}</strong></p>
+                    </div>
+            
+                    {{ include('search/_tri.html.twig') }}
+            
+                    {{ include('bien/_card.html.twig') }}
+                </div>
             </div>
-            
-            <hr>
-            <div>
-            <p>Le nombre les biens disponibles est: <strong>{{biensAlouer + biensAvendre}}</strong></p>
-            </div>
-            
-            <table class='table text-center'>
-                <tr>
-                    <th>
-                        {% if tri == 'DESC' %}
-                            <a href="?tri=ASC"><i class="fa-solid fa-arrow-down"></i> Pièces</a>
-                        {% elseif tri == 'ASC' %}
-                            <a href="?tri=DESC"><i class="fa-solid fa-arrow-up"></i> Pièces</a> 
-                        {% else %}
-                            <a href="?tri=DESC"><i class="fa-solid fa-arrows-from-line"></i> Pièces</a>
-                        {% endif %}
-                    </th>
 
-                    <th>
-                        {% if ordre == 'DESC' %}
-                            <a href="?ordre=ASC"><i class="fa-solid fa-arrow-down"></i> Surfaces</a>
-                        {% elseif ordre == 'ASC' %}
-                            <a href="?ordre=DESC"><i class="fa-solid fa-arrow-up"></i> Surfaces</a> 
-                        {% else %}
-                            <a href="?ordre=DESC"><i class="fa-solid fa-arrows-from-line"></i> Surfaces</a>
-                        {% endif %}
-                    </th>
-
-                    <th>
-                        {% if prixordre == 'DESC' %}
-                            <a href="?prixordre=ASC"><i class="fa-solid fa-arrow-down"></i> Prix</a>
-                        {% elseif prixordre == 'ASC' %}
-                            <a href="?prixordre=DESC"><i class="fa-solid fa-arrow-up"></i> Prix</a> 
-                        {% else %}
-                            <a href="?prixordre=DESC"><i class="fa-solid fa-arrows-from-line"></i> Prix</a>
-                        {% endif %}
-                    </th>
-                </tr>
-            </table>
-            
-            
-            <hr>
-            <div class="d-flex flex-wrap">
-                {% if biens %}
-                {% for bien in biens %}
-                    <article class='center m-5 ps-2 pe-2 pb-2 border' style='width:320px'>
-                        {% if not bien.photos is empty %}
-                            {% set firstphoto = bien.photos|first  %}
-                            <img src="{{ asset('img/biens/' ~ firstphoto.photo) }}" alt="{{bien.titre}}" id="photo_biens"><br>
-                           
-                        {% endif %} 
-                        <strong>{{bien.titre}}</strong><br>
-                        Nombre de pièces: {{bien.nbrepieces}}<br>
-                        Surface: {{bien.surface}}<br>
-                        Prix: {{bien.prix}}<br>
-                        {{bien.transactiontype}}
-                        <br><a href="{{path('single_bien',  {id: bien.id})}}"><button class='btn'>Voir le bien</button></a>
-                    </article>   
-                {% endfor %}
-                {% else %}
-                    <p>Il n'y a aucun bien enregistré</p>
-                {% endif %}
-
-            </div>
-            
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="{{(page == 1) ? 'disabled' : ''}}  page-item">
+                        <a class="page-link" href="{{ (page > 1) ? '?page=' ~ (page - 1) : '' }}"><i class="fa-solid fa-angles-left"></i></a>
+                    </li>
+                    {% for item in 1..((total / limit)|round(0, 'ceil')) %}
+                        <li class="{{(page == item) ? 'active' : ''}} page-item">
+                            <a href="?page={{ item }}" class="page-link">{{ item }}</a>
+                        </li>  
+                    {% endfor %} 
+                    {% set pages = ((total / limit)|round(0, 'ceil')) %}
+                    <li class="{{(page == pages) ? 'disabled' : ''}} page-item">
+                        <a class="page-link" href="{{ (page < 1) ? '?page=' ~ (page + 1) : '' }}"><i class="fa-solid fa-angles-right"></i></a>
+                    </li>
+                </ul>
+            </nav>
         </div>
-        
-    </div>
-
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="{{(page == 1) ? 'disabled' : ''}}">
-                <a class="page-link" href="{{ (page > 1) ? '?page=' ~ (page - 1) : '' }}"><i class="fa-solid fa-angles-left"></i></a>
-            </li>
-            {% for item in 1..((total / limit)|round(0, 'ceil')) %}
-                <li class="{{(page == item) ? 'active' : ''}}">
-                    <a href="?page={{ item }}">{{ item }}</a>
-                </li>  
-            {% endfor %} 
-            {% set pages = ((total / limit)|round(0, 'ceil')) %}
-            <li class="{{(page == pages) ? 'disabled' : ''}}">
-                <a class="page-link" href="{{ (page < 1) ? '?page=' ~ (page + 1) : '' }}"><i class="fa-solid fa-angles-right"></i></a>
-            </li>
-        </ul>
-    </nav>
-     
-
-</div>
-    
-
-    
+    </div>   
 {% endblock %}

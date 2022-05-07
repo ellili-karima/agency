@@ -1,0 +1,27 @@
+<div class="d-flex flex-wrap">
+                {% if biens %}
+                    {% for bien in biens %}
+
+                        <div class="card m-2" style="width: 18rem;">
+                            {% if not bien.photos is empty %}
+                                {% set firstphoto = bien.photos|first  %}
+                                <img src="{{ asset('img/biens/' ~ firstphoto.photo) }}" class="card-img-top" alt="{{bien.titre}}" id="photo_biens">
+                            {% endif %} 
+                            <div class="card-body">
+                                <h5 class="card-title">{{bien.titre}}</h5>
+                                <p class="card-text">
+                                    Nombre de pièces: {{bien.nbrepieces}}<br>
+                                    Surface: {{bien.surface}} m2<br>
+                                    Prix: {{bien.prix}} €<br>
+                                    {{bien.transactiontype}}
+                                </p>
+                                <a href="{{path('single_bien',  {id: bien.id})}}" class="btn btn-primary">Voir le bien</a>
+                            </div>
+                        </div>
+
+                {% endfor %}
+                {% else %}
+                    <p>Il n'y a aucun bien enregistré</p>
+                {% endif %}
+
+            </div>

@@ -303,11 +303,6 @@ class Bien
     }
     
 
-    // public function __toString()
-    // {
-    //     return $this->titre;
-    // }
-
     public function getEmployeur(): ?user
     {
         return $this->employeur;

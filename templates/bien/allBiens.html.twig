@@ -1,0 +1,97 @@
+<div class='col-12 text-end mb-5'>
+	<a href="{{path('bien_save')}}">
+		<button class='btn' id="btn_ajouter">Ajouter un bien</button>
+	</a>
+</div>
+<div>
+	<h2 class='mb-4 text-center'>Les propriétes</h2>
+	<div class="d-flex flex-wrap">
+		<table class='table text-center'>
+
+			{% if is_granted('ROLE_ADMIN') %}
+				<tr>
+					<th>Titre</th>
+					<th>Pièces</th>
+					<th>Surface</th>
+					<th>Prix</th>
+					<th>Localisation</th>
+					<th>Type</th>
+					<th>Etage</th>
+					<th>Transaction Type</th>
+					<th>Description</th>
+					<th>Date de construction</th>
+					<th>employés</th>
+					<th>Options</th>
+				</tr>
+				{% if biens %}
+					{% for bien in biens %}
+						<tr>
+							<td>{{bien.titre}}</td>
+							<td>{{bien.nbrepieces}}</td>
+							<td>{{bien.surface}}</td>
+							<td>{{bien.prix}}</td>
+							<td>{{bien.localisation}}</td>
+							<td>{{bien.type}}</td>
+							<td>{{bien.etage}}</td>
+							<td>{{bien.transactiontype}}</td>
+							<td>{{bien.description}}</td>
+							<td>{{bien.dateconstruction|date('d/m/Y')}}</td>
+							{# le nom le l'employeur qui gere ce bien #}
+							<td>{{bien.employeur.nom}}</td>
+							<td>
+
+								<a href="{{path('bien_update', {id: bien.id})}}">
+									<button class='btn' id='btn_modifier'>Modifier</button>
+								</a>
+								<br><br>
+								{{ include('bien/_delete_form.html.twig') }}
+
+							</td>
+						</tr>
+					{% endfor %}
+				{% endif %}
+
+                {% else %}
+                    <tr>
+                        <th>Titre</th>
+                        <th>Pièces</th>
+                        <th>Surface</th>
+                        <th>Prix</th>
+                        <th>Localisation</th>
+                        <th>Type</th>
+                        <th>Etage</th>
+                        <th>Transaction Type</th>
+                        <th>Description</th>
+                        <th>Date de construction</th>
+                        <th>Options</th>
+                    </tr>
+                    {% if biensuser %}
+                        {% for bien in biensuser %}
+                            <tr>
+                                <td>{{bien.titre}}</td>
+                                <td>{{bien.nbrepieces}}</td>
+                                <td>{{bien.surface}}</td>
+                                <td>{{bien.prix}}</td>
+                                <td>{{bien.localisation}}</td>
+                                <td>{{bien.type}}</td>
+                                <td>{{bien.etage}}</td>
+                                <td>{{bien.transactiontype}}</td>
+                                <td>{{bien.description}}</td>
+                                <td>{{bien.dateconstruction|date('d/m/Y')}}</td>
+                                <td>
+
+                                    <a href="{{path('bien_update', {id: bien.id})}}">
+                                        <button class='btn' id='btn_modifier'>Modifier</button>
+                                    </a>
+                                    <br><br>
+
+                                    {{ include('bien/_delete_form.html.twig') }}
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                {% endif %}
+            {% endif %}
+		</table>
+    </div>
+</div>

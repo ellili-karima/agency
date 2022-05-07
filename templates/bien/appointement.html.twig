@@ -1,36 +1,60 @@
-{% extends 'base.html.twig' %}
+{# {% extends 'base.html.twig' %}
 
-{% block body %}
+{% block body %} #}
 	<div class='container'>
 		<div class='row'>
 			<div class='col-12'>
                 <h3 class='text-center m-5'>La liste des rendez-vous</h3>
                     <table class='table'>
                         <tr>
+                            <th>ID</th>
+                            <th>Date</th> 
                             <th>Titre</th>
-                            <th>Date</th>
                             <th>Email</th>
                             <th>Téléphone</th>
                             <th>Nom</th>
                             <th>Prénom</th>
                         </tr>
-                        {% if appointements %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            {% if listeAppointements %}
             
-                            {% for appointement in appointements %}
-                            
-                                <tr>
-                                    <td>{{biens[appointement.id].titre}}</td>
-                                    <td>{{appointement.date|date('d/m/Y')}}</td>
-                                    <td>{{appointement.email}}</td>
-                                    <td>{{appointement.tel}}</td>
-                                    <td>{{appointement.nom}}</td>
-                                    <td>{{appointement.prenom}}</td>
-                                </tr>
-                            {% endfor %}
+                                {% for appointement in listeAppointements %}
+                                
+                                    <tr>
+                                        <td>{{appointement.id}}</td>
+                                        <td>{{appointement.date|date('d/m/Y H:m:s')}}</td>
+                                        {# le titre du bien qui concerne ce rendez-vous #}
+                                        <td>{{biens[appointement.id].titre}}</td>
+                                        <td>{{appointement.email}}</td>
+                                        <td>{{appointement.tel}}</td>
+                                        <td>{{appointement.nom}}</td>
+                                        <td>{{appointement.prenom}}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+
+                        
+                        {% else %}
+                        
+                            {% if appointements %}
+                
+                                {% for appointement in appointements %}
+                                
+                                    <tr>
+                                        <td>{{appointement.id}}</td>
+                                        <td>{{appointement.date|date('d/m/Y H:m:s')}}</td>
+                                        {# le titre du bien qui concerne ce rendez-vous #}
+                                        <td>{{biens[appointement.id].titre}}</td>
+                                        <td>{{appointement.email}}</td>
+                                        <td>{{appointement.tel}}</td>
+                                        <td>{{appointement.nom}}</td>
+                                        <td>{{appointement.prenom}}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                        {% endif %}
                     </table>
-            {% endif %}
-            
             </div>
         </div>
     </div>
-{% endblock %}
+{# {% endblock %} #}

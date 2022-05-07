@@ -6,7 +6,29 @@
 <div class="container">
     <h1 class='text-center'>Modifier le Bien</h1>
 
-    {{ include('bien/_form.html.twig', {'button_label': 'Modifier'}) }} 
+    {# {{ include('bien/_form.html.twig', {'button_label': 'Modifier'}) }}  #}
+    {% if is_granted('ROLE_ADMIN') %}
+            {{ include('bien/_form.html.twig' , {'button_label': 'Modifier'}) }}
+       {% else %}
+            {{ form_start(form) }}
+                {{ form_row(form.titre) }}
+                {{ form_row(form.nbrepieces) }}
+                {{ form_row(form.surface) }}
+                {{ form_row(form.prix) }}
+                {{ form_row(form.localisation) }}
+                {{ form_row(form.type) }}
+                {{ form_row(form.etage) }}
+                {{ form_row(form.transactiontype) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.dateconstruction) }}
+                {{ form_row(form.photos) }}
+                {{ form_row(form.options) }}
+                {{ form_row(form.employeur) == user.id}}
+
+                <button type="submit" class="btn">Ajouter</button>
+            {{ form_end(form) }}
+        
+        {% endif %}
 
     <hr>
     <table class="table text-center">

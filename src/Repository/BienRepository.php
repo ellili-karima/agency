@@ -70,9 +70,8 @@ class BienRepository extends ServiceEntityRepository
 
 
     
-        // recupere les biens en lien avec un fitre
     /**
-     * Undocumented function
+     * recupere les biens en lien avec un fitre
      *
      * @param SearchData $search
      * @return void
@@ -123,10 +122,8 @@ class BienRepository extends ServiceEntityRepository
     }
 
 
-    
-
     /**
-     * return les biens
+     * return la pagination des pages
      *
      * @param [type] $page
      * @param [type] $limit
@@ -142,7 +139,7 @@ class BienRepository extends ServiceEntityRepository
     }
 
     /**
-     * Return number of bien
+     * Return le nombre des bien
      *
      * @return void
      */
@@ -151,15 +148,13 @@ class BienRepository extends ServiceEntityRepository
         // $a="A louer";
             $qb = $this->createQueryBuilder('b')
                 ->select('COUNT(b)')
-                // ->andWhere('b.transactiontype = :val')
-                // ->setParameter('val', $a)
                 ;
                 return $qb->getQuery()->getSingleScalarResult();
            
     }
 
     /**
-     * Return number of bien
+     * Return le nombre des biens à louer
      *
      * @return void
      */
@@ -176,7 +171,7 @@ class BienRepository extends ServiceEntityRepository
     }
 
       /**
-     * Return number of bien
+     * Return le nombre des biens à vendre
      *
      * @return void
      */
@@ -197,125 +192,76 @@ class BienRepository extends ServiceEntityRepository
      *
      * @return void
      */
-    public function triPieces(string $tri){
+    public function triPieces(string $triPieces){
         $qb = $this->createQueryBuilder('b');
         
 
-        if($tri == 'DESC')
+        if($triPieces == 'DESC')
         {
             $qb->select('b')
-                ->orderBy('b.nbrepieces', $tri) ;
+                ->orderBy('b.nbrepieces', $triPieces) ;
+            $triPieces = 'ASC';
+        }
+        else{
+            $qb->select('b')
+            ->orderBy('b.nbrepieces', $triPieces) ;
+            $triPieces = 'DESC';
+        }
+
+        return $qb->getQuery()->getResult();
+
+    }
+
+    /**
+     * fonction pour faire un tri par la surface des biens
+     *
+     * @return void
+     */
+    public function triSurfaces(string $triSurfaces){
+        $qb = $this->createQueryBuilder('b');
+        
+
+        if($triSurfaces == 'DESC')
+        {
+            $qb->select('b')
+                ->orderBy('b.surface', $triSurfaces) ;
+            $triSurfaces = 'ASC';
+        }
+        else{
+            $qb->select('b')
+            ->orderBy('b.surface', $triSurfaces) ;
+            $triSurfaces = 'DESC';
+        }
+
+        return $qb->getQuery()->getResult();
+
+    }
+
+    /**
+     * fonction pour faire un tri par le prix des biens
+     *
+     * @return void
+     */
+    public function triPrix(string $triPrix){
+        $qb = $this->createQueryBuilder('b');
+        
+
+        if($triPrix == 'DESC')
+        {
+            $qb->select('b')
+                ->orderBy('b.prix', $triPrix) ;
             $tri = 'ASC';
         }
         else{
             $qb->select('b')
-            ->orderBy('b.nbrepieces', $tri) ;
-            $tri = 'DESC';
+            ->orderBy('b.prix', $triPrix) ;
+            $triPrix = 'DESC';
         }
 
         return $qb->getQuery()->getResult();
 
     }
 
-    /**
-     * fonction pour faire le tri par la surface des biens
-     *
-     * @return void
-     */
-    public function triSurfaces(string $tri){
-        $qb = $this->createQueryBuilder('b');
-        
-
-        if($tri == 'DESC')
-        {
-            $qb->select('b')
-                ->orderBy('b.surface', $tri) ;
-            $tri = 'ASC';
-        }
-        else{
-            $qb->select('b')
-            ->orderBy('b.surface', $tri) ;
-            $tri = 'DESC';
-        }
-
-        return $qb->getQuery()->getResult();
-
-    }
-
-    /**
-     * fonction pour faire le tri par la surface des biens
-     *
-     * @return void
-     */
-    public function triPri(string $tri){
-        $qb = $this->createQueryBuilder('b');
-        
-
-        if($tri == 'DESC')
-        {
-            $qb->select('b')
-                ->orderBy('b.prix', $tri) ;
-            $tri = 'ASC';
-        }
-        else{
-            $qb->select('b')
-            ->orderBy('b.prix', $tri) ;
-            $tri = 'DESC';
-        }
-
-        return $qb->getQuery()->getResult();
-
-    }
-
-    /**
-     * fonction pour faire le tri par la surface des biens
-     *
-     * @return void
-     */
-    public function triSurface(string $ordre){
-        $qb = $this->createQueryBuilder('b');
-        
-
-        if($ordre == 'DESC')
-        {
-            $qb->select('b')
-                ->orderBy('b.surface', $ordre) ;
-            $ordre = 'ASC';
-        }
-        else{
-            $qb->select('b')
-            ->orderBy('b.surface', $ordre) ;
-            $ordre = 'DESC';
-        }
-
-        return $qb->getQuery()->getResult();
-
-    }
-
-    /**
-     * fonction pour faire le tri par le prix des biens
-     *
-     * @return void
-     */
-    public function triPrix(string $prixordre){
-        $qb = $this->createQueryBuilder('b');
-        
-
-        if($prixordre == 'DESC')
-        {
-            $qb->select('b')
-                ->orderBy('b.prix', $prixordre) ;
-            $prixordre = 'ASC';
-        }
-        else{
-            $qb->select('b')
-            ->orderBy('b.prix', $prixordre) ;
-            $prixordre = 'DESC';
-        }
-
-        return $qb->getQuery()->getResult();
-
-    }
 
     /**
      * function filtre les biens par type ou par type de transaction
@@ -345,6 +291,13 @@ class BienRepository extends ServiceEntityRepository
     }
 
 
+
+    /**
+     * fonction retourn la liste des biens pas utilisateur
+     *
+     * @param User $user
+     * @return array
+     */
     public function getBiensUser(User $user): array
     {
         
@@ -354,6 +307,8 @@ class BienRepository extends ServiceEntityRepository
             ;
         return $query->getQuery()->getResult();
     }
+
+  
 
     // /**
     //  * @return Bien[] Returns an array of Bien objects

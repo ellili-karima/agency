@@ -16,8 +16,7 @@
     height: 400px;
 }
 #photo_biens{
-    width:300px;
-    height: 300px;
+    height: 200px;
 }
 #photo_biens_user{
     width:150px;
@@ -26,12 +25,16 @@
 #home{
     border-right: 2px solid black;
 }
-#option{
-    background-color: rgb(179, 81, 81);
-    color: rgb(85, 24, 24);
-    font-size: 20px;
-}
+
 #btn_ajouter{
-    width: 300px;
+    width: 150px;
+}
+#btn_modifier{
+    background-color: rgb(49, 150, 83);
+}
+#btn_supprimer{
     background-color: rgb(211, 38, 38);
+}
+#nbr{
+    color:green;
 }

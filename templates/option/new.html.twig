@@ -3,9 +3,10 @@
 {% block title %}New Option{% endblock %}
 
 {% block body %}
-    <h1>Create new Option</h1>
+    <div class='container mb-2'>
+        <h1>Ajouter une option</h1>
 
-    {{ include('option/_form.html.twig') }}
+        {{ include('option/_form.html.twig') }}
 
-    <a href="{{ path('app_option_index') }}">back to list</a>
+    </div>
 {% endblock %}

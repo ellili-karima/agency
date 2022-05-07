@@ -3,7 +3,7 @@
 {% block body %}
 <div class="container">
     <div class='row'>
-        <div class='col-10'id='home'>
+        <div class='col-9'id='home'>
             {% if app.user %}
                 <h5 class="danger">Bienvenue {{ app.user.nom }}</h5>
             {% endif %}
@@ -11,50 +11,24 @@
             <h1 class='text-center'>Bienvenue sur le site de notre agence immobilière</h1>
             <p class='text-center'>Retrouvez tous les biens près de chez vous au meilleur prix</p>
           
-            <div class="d-flex flex-wrap">
-                {% if biens %}
-                {% for bien in biens %}
-                    <article class='center m-5 ps-2 pe-2 pb-2 border' style='width:320px;'>
-                        {% if not bien.photos is empty %}
-                            {% set firstphoto = bien.photos|first  %}
-                            <img src="{{ asset('img/biens/' ~ firstphoto.photo) }}" alt="{{bien.titre}}" id="photo_biens"><br>
-                           
-                        {% endif %} 
-                        <strong>{{bien.titre}}</strong><br>
-                        Nombre de pièces: {{bien.nbrepieces}}<br>
-                        Surface: {{bien.surface}}<br>
-                        Prix: {{bien.prix}}<br>
-                        {{bien.transactiontype}}
-                        <br><a href="{{path('single_bien',  {id: bien.id})}}"><button class='btn'>Voir le bien</button></a>
-                    </article>   
-                {% endfor %}
-                {% else %}
-                    <p>Il n'y a aucun bien enregistré</p>
-                {% endif %}
-
-            </div>
-            
-            
-            
+            {{ include('bien/_card.html.twig') }}
+    
         </div>
-        <div class='col-2'>
-            <aside>
+        <div class='col-3'>
+            <div>
             <h3>Notre agence:</h3>
             <img src="{{asset('img/agence.jpg')}}" alt="">
-            <p>Vous pouvez nous retrouver tous les jours de <span class='fw-bold'>9h à 17h</span> au 1 rue de test 12345 TextVille ou nous contacter<br>
-            par mail:  contact@agency.fr<br> par téléphone: +33 123456789</p>
-            <hr>
+            <p  class="border-bottom-2">Vous pouvez nous retrouver <br>tous les jours de <span class='fw-bold'>9h à 17h</span><br> au 1 rue de test 12345 TextVille <br> ou nous contacter<br>
+            par mail: <a href="#">agence@agence.fr</a><br> par téléphone: <a href="#">+33 123456789</a></p>
+            </div>
+            <div class='border-top mt-3'>
             <p><a href="?filtre=Appartement">Appartement</a></p>
             <p><a href="?filtre=Maison">Maison</a></p>
             <p><a href="?filtre=Achat">Achat</a></p>
             <p><a href="?filtre=Vente">Location</a></p>
-            
-            </aside>
+            </div>
         </div>
     </div>
 
 </div>
-    
-
-    
 {% endblock %}

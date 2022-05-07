@@ -49,6 +49,12 @@ class AppointementRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * fonction retourne les appointements correspond à un user
+     *
+     * @param User $user
+     * @return void
+     */
     public function getAppointement(User $user){
          
         $query = $this->createQueryBuilder('a')
@@ -56,6 +62,22 @@ class AppointementRepository extends ServiceEntityRepository
             ->andWhere('b.employeur = :val')
             ->setParameter('val', $user->getId());
             ;
+        return $query->getQuery()->getResult();
+    }
+
+
+    public function getfiltre2(string $recherche,User $user): array
+    {
+        $query = $this->createQueryBuilder('a');
+
+        if ($recherche == 'Appointement') {
+            $query = $this->createQueryBuilder('a')
+            ->join('a.titre', 'b')
+            ->andWhere('b.employeur = :val')
+            ->setParameter('val', $user->getId());
+            ;
+        }
+       
         return $query->getQuery()->getResult();
     }
 
