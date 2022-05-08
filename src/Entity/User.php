@@ -38,7 +38,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
-    #[ORM\OneToMany(mappedBy: 'employeur', targetEntity: Bien::class)]
+    #[ORM\OneToMany(mappedBy: 'employeur', targetEntity: Bien::class )]
     private $biens;
 
     public function __construct()
@@ -158,10 +158,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 
-    // public function __toString()
-    // {
-    //     return $this->roles;
-    // }
 
     /**
      * @return Collection<int, Bien>

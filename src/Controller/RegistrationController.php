@@ -4,9 +4,12 @@ namespace App\Controller;
 
 
 
+use App\Entity\Bien;
 use App\Entity\User;
 use App\Security\EmailVerifier;
+use PhpParser\Node\Stmt\Foreach_;
 use App\Form\RegistrationFormType;
+use App\Repository\BienRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,10 +18,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
@@ -59,8 +63,9 @@ class RegistrationController extends AbstractController
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
             // do anything else you need here, like send an email
+            $this->addFlash("success", "L'utilisateur a été ajouté avec succés");
 
-            return $this->redirectToRoute('accueil');
+            return $this->redirectToRoute('administration');
         }
 
         return $this->render('registration/register.html.twig', [
@@ -89,7 +94,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register/{id}/update', name: "user_update",methods: ['GET', 'POST'], requirements: ['id' => "[0-9]+"])]
-    #[IsGranted(data:'ROLE_ADMIN', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
+    // #[IsGranted(data:'ROLE_ADMIN', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
     public function update(User $user, UserRepository $userRepository,Request $request): Response
     {
         
@@ -98,8 +103,12 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // je recupere les informations du user pour les inserer dans le formulaire de l'update
             $userRepository->add($user);
+            //mot de passe 
 
-            return $this->redirectToRoute('accueil');
+            
+
+
+            return $this->redirectToRoute('administration');
         }
 
         return $this->render('registration/register.html.twig', [
@@ -108,13 +117,24 @@ class RegistrationController extends AbstractController
     }
     
     #[Route('/employeurs/{id}/delete', name: "user_delete",methods: ['POST'], requirements: ['id' => "[0-9]+"])]
-    public function delete(Request $request, User $user, UserRepository $userRepository)
+    public function delete(Request $request, User $user, UserRepository $userRepository, UserInterface $admin)
     {
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
+            
+        
+            //on recupere tout les biens qui sont attachés au user à supprimer
+           $allBiensUser = $user->getBiens();
+           //on les parcours 
+           foreach( $allBiensUser as $unBien){
+                //on les attache avec l'admin
+                $unBien->setEmployeur($admin);
+           }
+           
             $userRepository->remove($user);
         }
 
-        return $this->redirectToRoute('employeurs', [], Response::HTTP_SEE_OTHER);
+        $this->addFlash("success", "L'utilisateur a été supprimé avec succés");
+        return $this->redirectToRoute('administration', [], Response::HTTP_SEE_OTHER);
        
     }
 

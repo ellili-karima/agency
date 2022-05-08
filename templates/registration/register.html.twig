@@ -3,23 +3,46 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-<div class='container mb-5'>
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
 
-    <h1 class='text-center'>Enregistrement</h1>
+    {% if is_granted('ROLE_ADMIN') %}
+        <div class='container mb-5'>
+            {% for flash_error in app.flashes('verify_email_error') %}
+                <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+            {% endfor %}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.nom) }}
-        {{ form_row(registrationForm.prenom) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+            <h1 class='text-center'>Enregistrement</h1>
 
-        <button type="submit" class="btn">Ajouter</button>
-    {{ form_end(registrationForm) }}
-</div>
+            {{ form_start(registrationForm) }}
+                {{ form_row(registrationForm.nom) }}
+                {{ form_row(registrationForm.prenom) }}
+                {{ form_row(registrationForm.email) }}
+                {{ form_row(registrationForm.plainPassword, {
+                    label: 'mot de passe'
+                }) }}
+                {{ form_row(registrationForm.agreeTerms) }}
+
+                <button type="submit" class="btn">Ajouter</button>
+            {{ form_end(registrationForm) }}
+        </div>
+    {% else %}
+        <div class='container mb-5'>
+            {{ form_start(registrationForm) }}
+                <div class='d-none'>
+                    {{ form_row(registrationForm.nom) }}
+                    {{ form_row(registrationForm.prenom) }}
+                    {{ form_row(registrationForm.email) }}
+                </div>
+                    
+                    {{ form_row(registrationForm.plainPassword, {
+                        label: 'mot de passe'
+                    }) }}
+                    {{ form_row(registrationForm.agreeTerms) }}
+
+                    <button type="submit" class="btn">Ajouter</button>
+            {{ form_end(registrationForm) }}
+        </div>
+
+    {% endif %}
+        
+
 {% endblock %}

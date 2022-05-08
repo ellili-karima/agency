@@ -1,7 +1,5 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Bien{% endblock %}
-
 {% block body %}
     <div class='container mb-5'>
         <h1 class='text-center'>Ajouter un nouveau bien</h1>
@@ -21,6 +19,7 @@
                 {{ form_row(form.dateconstruction) }}
                 {{ form_row(form.photos) }}
                 {{ form_row(form.options) }}
+                {#l'employeur du bien prendra l'id du user connecté#}
                 {{ form_row(form.employeur) == user.id}}
 
                 <button type="submit" class="btn">Ajouter</button>

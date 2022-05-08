@@ -305,7 +305,8 @@ class BienController extends AbstractController
             $bienRepository->remove($bien);
         }
 
-        return $this->redirectToRoute('biens', [], Response::HTTP_SEE_OTHER);
+        $this->addFlash("success", "Le bien a été supprimé avec succés");
+        return $this->redirectToRoute('administration', [], Response::HTTP_SEE_OTHER);
     }
     
      /**
@@ -339,6 +340,7 @@ class BienController extends AbstractController
             'appointements' => $apprepository->getAppointement($user),
             //on recupere la liste de tout les rendez-vous
             'listeAppointements' => $apprepository->findAll(),
+            'user' =>$user
         ]);
     }
     
