@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Bien;
 use App\Entity\User;
-use App\Entity\Option;
 use App\Entity\Photo;
+use App\Entity\Option;
 use App\Form\BienType;
 use App\Data\SearchData;
 use App\Entity\Optionbien;
@@ -14,7 +14,6 @@ use App\Form\SearchFormType;
 use App\Form\AppointementType;
 use App\Repository\BienRepository;
 use App\Repository\UserRepository;
-use App\Repository\OptionRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\AppointementRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +21,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class BienController extends AbstractController
 {
@@ -319,6 +320,7 @@ class BienController extends AbstractController
     #[Route('/administration', name: 'administration')]
     public function administration(BienRepository $repository,AppointementRepository $apprepository, Request $request,UserInterface $user, UserRepository $users): Response
     {
+       
         //recuperer le filtre de l'administartion du href
         $administration = $request->query->get("administration");
         if(!$administration){
@@ -340,6 +342,7 @@ class BienController extends AbstractController
             'appointements' => $apprepository->getAppointement($user),
             //on recupere la liste de tout les rendez-vous
             'listeAppointements' => $apprepository->findAll(),
+            //on recupere l'utilisateur connecté
             'user' =>$user
         ]);
     }

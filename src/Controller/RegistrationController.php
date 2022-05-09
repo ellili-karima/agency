@@ -94,7 +94,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register/{id}/update', name: "user_update",methods: ['GET', 'POST'], requirements: ['id' => "[0-9]+"])]
-    // #[IsGranted(data:'ROLE_ADMIN', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
+    #[IsGranted(data:'ROLE_ADMIN', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
     public function update(User $user, UserRepository $userRepository,Request $request): Response
     {
         
@@ -104,10 +104,8 @@ class RegistrationController extends AbstractController
             // je recupere les informations du user pour les inserer dans le formulaire de l'update
             $userRepository->add($user);
             //mot de passe 
-
             
-
-
+        
             return $this->redirectToRoute('administration');
         }
 

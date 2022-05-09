@@ -10,13 +10,6 @@
 					<div class='col-12 text-end mb-5'>
 						<i class="fa-solid fa-user"></i>
 						{{employeur}}
-						<br>
-						{% if not is_granted('ROLE_ADMIN') %}
-							<a href="{{path('user_update',  {id: user.id})}}" class='me-3'>
-								<button class='btn' id='btn_modifier'>Modifier mot de passe</button>
-							</a>
-						
-						{% endif %}
 						
 						<hr>
 					</div>
