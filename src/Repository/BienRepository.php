@@ -308,6 +308,23 @@ class BienRepository extends ServiceEntityRepository
         return $query->getQuery()->getResult();
     }
 
+
+    /**
+     * fonction permet de faire une recherche des mots dans les biens
+     *
+     * @param [type] $searchword
+     * @return array|null
+     */
+    public function findWithSearchword ($searchword): ?array
+    {
+        $qb = $this->createQueryBuilder('b');
+        //ici on passe l'expression qu'on veut chercher dans le table b pour bien
+        $qb->where($qb->expr()->like('b.titre', $qb->expr()->literal('%'. $searchword . '%')))
+            ->orWhere($qb->expr()->like('b.transactiontype', $qb->expr()->literal('%'. $searchword . '%')))
+            ->orWhere($qb->expr()->like('b.description', $qb->expr()->literal('%'. $searchword .'%')))
+        ;
+        return $qb->getQuery()->getResult();
+    }
   
 
     // /**

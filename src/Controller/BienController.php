@@ -10,6 +10,7 @@ use App\Entity\Optionbien;
 use App\Entity\Appointement;
 use App\Form\SearchFormType;
 use App\Form\AppointementType;
+use App\Form\RechercheFormType;
 use App\Form\AppointementUserType;
 use App\Repository\BienRepository;
 use App\Repository\UserRepository;
@@ -332,12 +333,22 @@ class BienController extends AbstractController
      * @return Response
      */
     #[Route('/administration', name: 'administration')]
-    public function administration(BienRepository $repository,AppointementRepository $apprepository, Request $request,UserInterface $user, UserRepository $users): Response
+    public function administration(ManagerRegistry $manager, BienRepository $repository,AppointementRepository $apprepository, Request $request,UserInterface $user, UserRepository $users): Response
     {
         //recuperer le filtre de l'administartion du href
         $administration = $request->query->get("administration");
         if(!$administration){
              $administration = 'Biens';
+        }
+
+        $filteredBiens = array();
+        $form = $this->createForm(RechercheFormType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            //ici on recupere l'information du champs
+            $searchWord = $form->get('searchWord')->getData();
+            //on recupere les resultats obrenus et ça sera dans un array
+            $filteredBiens = $manager->getRepository(Bien::class)->findWithSearchword($searchWord);
         }
             return $this->render('bien/administration.html.twig', [
                 'administration' => $administration,
@@ -356,7 +367,10 @@ class BienController extends AbstractController
                 //on recupere la liste de tout les rendez-vous
                 'listeAppointements' => $apprepository->findAll(),
                 //on recupere l'utilisateur connecté
-                'user' =>$user
+                'user' =>$user,
+                //
+                'filteredBiens' => $filteredBiens,
+                'formRecherche' => $form->createView(),
         ]);
     }
 

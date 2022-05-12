@@ -46,29 +46,55 @@
 								</div>
 							{% endfor %}
 						</div>
+				
+						<div class='col-12 d-flex justify-content-between mt-5 mb-5'>
+							
+							{{form_start(formRecherche)}}
+								<div class='d-flex'>
+									<div class='me-2'>
+										{{form_widget(formRecherche.searchWord)}}
+									</div>
+									<div>
+										{{form_widget(formRecherche.submit, {attr: {'class':'btn btn-primary'}})}}
+									</div>
+								</div>
+							{{form_end(formRecherche)}}
 
-						<div class='col-12 text-end mt-5'>
-							<i class="fa-solid fa-user"></i>
-							{{user.email}}
-
-							<hr>
+							<div><i class="fa-solid fa-user"></i> {{user.email}} </div>
+							
 						</div>
+						<hr>
+						
 					</div>
 					{% block body %}
 						{% if app.user.id %}
+							{% if filteredBiens %}
+								<ul class="text-left">
+									{% for bien in filteredBiens %}
+										<li>
+											<strong>Titre:</strong> {{bien.titre }}<br>
+											<strong>Transaction type: </strong>{{bien.transactiontype}}<br>
+											<strong>Description: </strong>{{bien.description}}
+										</li>
+										<hr>
+									{% endfor %}
+								</ul>
+							{% else %}
+							
+								{% if administration =='Appointement' %}
+									{{ include('bien/appointement.html.twig') }}
+								{% endif %}
+								{% if administration =='Biens' %}
+									{{ include('bien/allbiens.html.twig') }}
+								{% endif %}
+								{% if administration =='Employés' %}
+									{{ include('bien/employeurs.html.twig') }}
+								{% endif %}
+								{% if administration =='Fiche' %}
+									{{ include('fiche/fiche.html.twig') }}
+								{% endif %}
 
-							{% if administration =='Appointement' %}
-								{{ include('bien/appointement.html.twig') }}
-							{% endif %}
-							{% if administration =='Biens' %}
-								{{ include('bien/allbiens.html.twig') }}
-							{% endif %}
-							{% if administration =='Employés' %}
-								{{ include('bien/employeurs.html.twig') }}
-							{% endif %}
-							{% if administration =='Fiche' %}
-								{{ include('fiche/fiche.html.twig') }}
-							{% endif %}
+							{% endif %}	
 						{% endif %}
 					</div>
 				</div>
