@@ -1,41 +1,61 @@
+<div class="container">
+	<div class='row'>
+		<div class='col-12 text-end mb-5'>
+			<a href="{{path('app_register')}}">
+				<button class='btn' id="btn_ajouter">Ajouter un employé</button>
+			</a>
+		</div>
+		<div>
+			<h2 class='text-center mb-5'>La liste des employés</h2>
+			<table class='table text-center'>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Email</th>
+						<th>Nom</th>
+						<th>Prénom</th>
+						<th>Roles</th>
+						<th>Is Verified</th>
+						<th>Options</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for employeur in listeEmployeurs %}
+						<tr>
+							<td>{{ employeur.ID}}</td>
+							<td>{{ employeur.email}}</td>
+							<td>{{ employeur.nom}}</td>
+							<td>{{ employeur.prenom}}</td>
+							{# <td>{{ employeur.roles ? employeur.roles|json_encode : ''}}</td> #}
+							<td>
+								{% for role in employeur.roles %}
+									{% if role == "ROLE_ADMIN" %}
+										Admin
+									{% elseif role == "ROLE_USER" %}
+										Utilisateur
+									{% endif %}
 
-    <div class="container">
-        <div class='row'>
-                <div class='col-12 text-end mb-5'>
-                    <a href="{{path('app_register')}}"><button class='btn' id="btn_ajouter">Ajouter un employé</button></a>
-                </div>
-                <div>
-                    <h1 class='text-center mb-5'>La liste des employés</h1>
-                    <table class='table text-center'>
-                        <tr>
-                            <th>ID</th>
-                            <th>Email</th>
-                            <th>Nom</th>
-                            <th>Prénom</th>
-                            <th>Options</th>
-                        </tr>
-                        {% for employeur in listeEmployeurs %}
-                        <tr>
-                            <td>{{ employeur.ID}}</td>
-                            <td>{{ employeur.email}}</td>
-                            <td>{{ employeur.nom}}</td>
-                            <td>{{ employeur.prenom}}</td>
-                            <td class='d-flex justify-content-center'>
-                        
-                                <a href="{{path('user_update',  {id: employeur.id})}}" class='me-3'>
-                                    <button class='btn' id='btn_modifier'>Modifier</button>
-                                </a>
-                                <form method="post" action="{{ path('user_delete', {'id': employeur.id}) }}" onsubmit="return confirm('Êtes-vous sûr de bien vouloir supprimer cet employeur ?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ employeur.id) }}">
-                                    <button class="btn" id='btn_supprimer'>Supprimer</button>
-                                </form>
 
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        
-                    </table>
-                
-                </div>
-        </div>
-    </div>
+								{% endfor %}
+							</td>
+							<td>{{ employeur.isVerified ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>' }}</td>
+							<td class='d-flex justify-content-center'>
+
+								<a href="{{path('user_update', {id: employeur.id})}}" class='me-3'>
+									<button class='btn' id='btn_modifier'>Modifier</button>
+								</a>
+								<form method="post" action="{{ path('user_delete', {'id': employeur.id}) }}" onsubmit="return confirm('Êtes-vous sûr de bien vouloir supprimer cet employeur ?');">
+									<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ employeur.id) }}">
+									<button class="btn" id='btn_supprimer'>Supprimer</button>
+								</form>
+
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+
+			</table>
+
+		</div>
+	</div>
+</div>

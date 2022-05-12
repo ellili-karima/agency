@@ -41,9 +41,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'employeur', targetEntity: Bien::class )]
     private $biens;
 
+    // #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'users')]
+    // private $role;
+
     public function __construct()
     {
         $this->biens = new ArrayCollection();
+        $this->role = new ArrayCollection();
     }
 
    
@@ -79,9 +83,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        // $roles[] = json_encode($this->roles);
+        //$roles[] = json_encode($this->roles);
         //instead of
         $roles = $this->roles;
+        // $userRoles = $this->getRole();
+        // foreach ($userRoles as $userRole) {
+        //     $roles[] = $userRole->getRole();
+        // }
         // guarantee every user at least has ROLE_USER
         $roles[]= 'ROLE_USER';
 
@@ -188,4 +196,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    // /**
+    //  * @return Collection<int, Role>
+    //  */
+    // public function getRole(): Collection
+    // {
+    //     return $this->role;
+    // }
+
+    // public function addRole(Role $role): self
+    // {
+    //     if (!$this->role->contains($role)) {
+    //         $this->role[] = $role;
+    //     }
+
+    //     return $this;
+    // }
+
+    // public function removeRole(Role $role): self
+    // {
+    //     $this->role->removeElement($role);
+
+    //     return $this;
+    // }
 }

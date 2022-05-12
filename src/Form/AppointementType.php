@@ -3,16 +3,18 @@
 namespace App\Form;
 
 
+use App\Entity\Bien;
 use App\Entity\Appointement;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\TelType;
 
 class AppointementType extends AbstractType
 {
@@ -41,7 +43,11 @@ class AppointementType extends AbstractType
             ])
             ->add('date', DateTimeType::class, [
                 'label' => "Date de rendez-vous"
-                ])
+            ])
+            ->add('titre', EntityType::class, array(
+                'class' => Bien::class,
+                'choice_label' => 'Titre',
+            ))
             
         ;
     }

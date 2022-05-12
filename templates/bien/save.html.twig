@@ -1,6 +1,7 @@
-{% extends 'base.html.twig' %}
+{% extends 'bien/administration.html.twig' %}
 
 {% block body %}
+<main>
     <div class='container mb-5'>
         <h1 class='text-center'>Ajouter un nouveau bien</h1>
         {% if is_granted('ROLE_ADMIN') %}
@@ -27,5 +28,5 @@
         
         {% endif %}
     </div>
-    
+    </main>
 {% endblock %}

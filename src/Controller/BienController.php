@@ -3,9 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Bien;
-use App\Entity\User;
 use App\Entity\Photo;
-use App\Entity\Option;
 use App\Form\BienType;
 use App\Data\SearchData;
 use App\Entity\Optionbien;
@@ -21,8 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
-use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class BienController extends AbstractController
 {
@@ -143,7 +140,8 @@ class BienController extends AbstractController
             $appointement->setTitre($bien);
             //on insére les donneés envoyées par le formulaire 
             $appointementRepository->add($appointement);
-            return $this->redirectToRoute('biens', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash("success", "La demande a été envoiée avec succès");
+            return $this->redirectToRoute('single_bien', ['id' => $id,]  ,Response::HTTP_SEE_OTHER);
         }
 
         if ($bien) {
@@ -166,10 +164,15 @@ class BienController extends AbstractController
      * @param ManagerRegistry $manager
      * @return Response
      */
-    #[Route('/bien/save', name: 'bien_save', methods: ["GET", "POST"])]
+    #[Route('bien/save', name: 'bien_save', methods: ["GET", "POST"])]
     public function save(Request $request, ManagerRegistry $manager,UserInterface $user): Response
     {
-        
+        //recuperer le filtre de l'administartion du href
+        $administration = $request->query->get("administration");
+        if(!$administration){
+             $administration = 'Biens';
+        }
+
         // on instancie la class Bien
         $bien = new Bien();
         // on crée un formulaire du bien
@@ -220,6 +223,8 @@ class BienController extends AbstractController
         }
        
         return $this->render('bien/save.html.twig', [
+            'administration' => $administration,
+            //on retourn l'utilisateur connecté
             'user' => $user,
             //on retourn un formilaire d'ajout de bien
             'form' => $form->createView()
@@ -233,7 +238,14 @@ class BienController extends AbstractController
     #[Route('/bien/{id}/update', name: "bien_update", requirements: ['id' => "[0-9]+"])]
     public function edit(Request $request, Bien $bien, ManagerRegistry $manager, UserInterface $user): Response
     {
+        //recuperer le filtre de l'administartion du href
+        $administration = $request->query->get("administration");
+        if(!$administration){
+             $administration = 'Biens';
+        }
+
         $form = $this->createForm(BienType::class, $bien);
+        //on recupere la requete
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -283,10 +295,11 @@ class BienController extends AbstractController
             $em->flush();
             $this->addFlash("success", "Le bien a été modifié avec succés");
 
-            return $this->redirectToRoute('administration', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('administration', ['administration'=>'Biens'], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('bien/update.html.twig', [
+            'administration' => $administration,
             'bien' => $bien,
             //on retourn le formulaire de mise à jours du bien
             'form' => $form->createView(), 
@@ -307,7 +320,7 @@ class BienController extends AbstractController
         }
 
         $this->addFlash("success", "Le bien a été supprimé avec succés");
-        return $this->redirectToRoute('administration', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('administration', ['administration'=>'Biens'], Response::HTTP_SEE_OTHER);
     }
     
      /**
@@ -320,82 +333,105 @@ class BienController extends AbstractController
     #[Route('/administration', name: 'administration')]
     public function administration(BienRepository $repository,AppointementRepository $apprepository, Request $request,UserInterface $user, UserRepository $users): Response
     {
-       
         //recuperer le filtre de l'administartion du href
         $administration = $request->query->get("administration");
         if(!$administration){
              $administration = 'Biens';
         }
-        return $this->render('bien/administration.html.twig', [
-            'administration' => $administration,
-            //on récupere la liste des biens de chaque utilisateur
-            'biensuser' => $repository->getBiensUser($user),
-            //on recupere tout les biens
-            'biens' => $repository->findAll(),
-            //on récupere l'identifiant de l'utlisateur connecté
-            'employeur' => $user->getUserIdentifier(),
-            //on récupere la liste de tout les utilisateurs
-            'listeEmployeurs' => $users->findAll(),
-            //on récupere la liste de tout les biens
-            'listeBiens' => $repository->findAll(),
-            //on recupere la liste les rendez-vous de chauqe utilisateur
-            'appointements' => $apprepository->getAppointement($user),
-            //on recupere la liste de tout les rendez-vous
-            'listeAppointements' => $apprepository->findAll(),
-            //on recupere l'utilisateur connecté
-            'user' =>$user
+            return $this->render('bien/administration.html.twig', [
+                'administration' => $administration,
+                //on récupere la liste des biens de chaque utilisateur
+                'biensuser' => $repository->getBiensUser($user),
+                //on recupere tout les biens
+                'biens' => $repository->findAll(),
+                //on récupere l'identifiant de l'utlisateur connecté
+                'employeur' => $user->getUserIdentifier(),
+                //on récupere la liste de tout les utilisateurs
+                'listeEmployeurs' => $users->findAll(),
+                //on récupere la liste de tout les biens
+                'listeBiens' => $repository->findAll(),
+                //on recupere la liste les rendez-vous de chauqe utilisateur
+                'appointements' => $apprepository->getAppointement($user),
+                //on recupere la liste de tout les rendez-vous
+                'listeAppointements' => $apprepository->findAll(),
+                //on recupere l'utilisateur connecté
+                'user' =>$user
         ]);
+    }
+
+    /**
+     * fonction permet à l'utulisateur connecté de modifier son mot de passe
+     *
+     * @param ManagerRegistry $manager
+     * @param Request $request
+     * @param UserPasswordHasherInterface $passHasher
+     * @return Response
+     */
+    #[Route('/editpass', name: 'editpass')]
+    public function editpass(ManagerRegistry $manager, Request $request, UserPasswordHasherInterface $passHasher, UserInterface $userConnecte): Response
+    {
+        //recuperer le filtre de l'administartion du href
+        $administration = $request->query->get("administration");
+        if(!$administration){
+             $administration = 'Fiche';
+        }
+        //on verifie si on est en methode POST
+        if($request->isMethod('POST')){
+            $em = $manager->getManager();
+            $user = $this->getUser();
+            //on verifie si les 2 mots de passe sont identiques
+            if($request->request->get('pass') == $request->request->get('pass2')){
+                $user->setPassword($passHasher->hashPassword($user,$request->request->get('pass')));
+                $em->flush(); // pour metre a jour la base de donnees
+                $this->addFlash("success", "Mot de passe a été mis à jour avec succès");
+                return $this->redirectToRoute('administration', ['administration'=>'Fiche']);
+            }else{
+                $this->addFlash('error', 'Les deux mots de passes ne sont pas identiques');
+            }
+
+        }
+
+        return $this->render('fiche/editpass.html.twig', ['administration' => $administration, 'user' => $userConnecte]);
     }
     
 
-    // #[Route('/user/biens/appointement', name: 'appointement')]
-    // public function appointement(AppointementRepository $repository ,UserInterface $user,BienRepository $bien ): Response
-    // {
+    /**
+     * cette fonction permet aux utilisateurs connectés de prendre un rendez-vous
+     *
+     * @param Request $request
+     * @param AppointementRepository $appointementRepository
+     * @param UserInterface $user
+     * @return Response
+     */
+    #[Route('/addappointement', name: 'addAppointement')]
+    public function appointement(Request $request, AppointementRepository $appointementRepository, UserInterface $user): Response
+    {
+         //recuperer le filtre de l'administartion du href
+         $administration = $request->query->get("administration");
+         if(!$administration){
+              $administration = 'Appointement';
+         }
+
+        $appointement = new Appointement();
+        //on crée un formulaire d'appointement
+        $form = $this->createForm(AppointementType::class, $appointement);
+        $form->handleRequest($request);
         
-    //     return $this->render('bien/appointement.html.twig', [
-    //         //on recupere la liste les rendez-vous de chauqe utilisateur
-    //         'appointements' => $repository->getAppointement($user),
-    //         //on recupere la liste de tout les rendez-vous
-    //         'listeAppointements' => $repository->findAll(),
-    //         //on recupere tout les biens
-    //         'biens' => $bien->findAll()
-            
-    //     ]);
-    // }
+        if ($form->isSubmitted() && $form->isValid()) {
+           
+            //on insére les donneés envoyées par le formulaire 
+            $appointementRepository->add($appointement);
+          
+            return $this->redirectToRoute('administration', ['administration'=>'Appointement'], Response::HTTP_SEE_OTHER);
+        }
+        return $this->render('bien/addAppointement.html.twig', [
+            'administration' => $administration,
+            'form' => $form->createView(),
+            'user' => $user,
+           
+          
+        ]);
+    }
 
-
-
-    // #[Route('/employeurs', name: 'employeurs')]
-    // public function listeEmployeurs(UserRepository $user): Response
-    // {
-    //     return $this->render('bien/employeurs.html.twig', [
-    //         //on recupere la liste de tout les utilisateurs
-    //         'listeEmployeurs' => $user->findALL(),
-    //     ]);
-    // }
-
-    // #[Route('/photo/{id}/delete', name:'delete_photo', methods: ['POST'])]
-    // public function deletePhoto(Photo $photo, Request $request, ManagerRegistry $manager){
-
-    //     $data =Json_decode($request->getContent(), true);
-    //     //on verifier si le token est valide
-    //     if($this->isCsrfTokenValid('delete'.$photo->getId(), $data['_token'])){
-
-    //         //on récupère le nom de l'image
-    //         $nom = $photo->getPhoto();
-    //         //on supprime le fichier
-    //         unlink($this->getParameter('upload_dir').'/'.$nom);
-
-    //         //on supprime l'entrée de la base
-    //         $em = $manager->getManager();
-    //         $em->remove($photo);
-    //         $em->flush();
-
-    //         //on répont en Json_decode
-    //         return new JsonResponse(['success'=>1]);
-    //     }else{
-    //         return new JsonResponse(['error' => 'Token invalide'], 400);
-    //     }
-    // }
 
 }

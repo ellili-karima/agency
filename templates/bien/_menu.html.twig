@@ -1,22 +1,85 @@
-<div class='col-2 bg-light text-dark'>
-	<h4 class='mt-5'>Agence</h4><br>
-	<h5>Gestion</h5>
-	<div class='mb-5'>
-		<a href="?administration=Biens">
-			<i class="fa-solid fa-house-chimney"></i>
-			Biens immobiliers</a>
-		<br>
-		<a href="?administration=Appointement">
-			<i class="fa-solid fa-calendar"></i>
-			Rendez-vous</a>
-	</div>
-	{% if is_granted('ROLE_ADMIN') %}
-		<h5>Administration</h5>
-		<div>
-			<a href="?administration=Employés">
-				<i class="fa-solid fa-user"></i>
-				Employés</a>
-		</div>
-	{% endif %}
 
-</div>
+<div class='row'>
+
+<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark col-2">
+    <a href="{{path('accueil')}}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+      <span class="fs-4">Agence</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item">
+        {% if administration =='Fiche' %}
+            <a href="{{ path('administration', {'administration':'Fiche'}) }}" class="nav-link text-white active" aria-current="page">
+                
+                <i class="fa-solid fa-address-card"></i> Mon profil
+            </a>
+        {% else %}
+            <a href="{{ path('administration', {'administration':'Fiche'}) }}" class="nav-link text-white " aria-current="page">
+               
+                <i class="fa-solid fa-address-card"></i> Mon profil
+            </a>
+        {% endif %}
+      </li>
+      <hr>
+      
+      <h5>Gestion</h5>
+      <li>
+        {% if administration =='Biens' %}
+            <a href="{{ path('administration', {'administration':'Biens'}) }}" class="nav-link text-white active">
+            
+            <i class="fa-solid fa-house-chimney"></i> Biens immobiliers</a>
+            </a>
+        {% else %}
+            <a href="{{ path('administration', {'administration':'Biens'}) }}" class="nav-link text-white">
+               
+                <i class="fa-solid fa-house-chimney"></i> Biens immobiliers</a>
+            </a>
+         {% endif %}
+
+      </li>
+      <li>
+      {% if administration =='Appointement' %}
+        <a href="{{ path('administration', {'administration':'Appointement'}) }}" class="nav-link text-white active">
+          
+         <i class="fa-solid fa-calendar"></i> Rendez-vous
+        </a>
+        {% else %}
+        <a href="{{ path('administration', {'administration':'Appointement'}) }}" class="nav-link text-white ">
+          
+         <i class="fa-solid fa-calendar"></i> Rendez-vous
+        </a>
+        {% endif %}
+      </li>
+      {% if is_granted('ROLE_ADMIN')%}
+      <hr>
+		<h5>Administration</h5>
+      <li>
+        {% if administration =='Employés' %}
+            <a href="{{ path('administration', {'administration':'Employés'}) }}" class="nav-link text-white active">
+             
+                <i class="fa-solid fa-user"></i> Employés
+            </a>
+        {% else %}
+            <a href="{{ path('administration', {'administration':'Employés'}) }}" class="nav-link text-white">
+                
+                <i class="fa-solid fa-user"></i> Employés
+            </a>
+        {% endif %}
+      </li>
+      {% endif %}
+      <hr>
+      <li>
+       
+            <a href="{{ path('app_logout')}}" class="nav-link text-white">
+             
+                Déconnexion
+            </a>
+       
+      </li>
+     
+    </ul>
+    
+  </div>
+ 
+

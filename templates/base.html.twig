@@ -28,16 +28,12 @@
 						<div class="collapse navbar-collapse" id="navbarNav">
 							<ul class="navbar-nav">
 								<li class="nav-item">
-									<a class="nav-link active" aria-current="page" href="/">Acceuil</a>
+									<a class="nav-link active" aria-current="page" href="/">Accueil</a>
 								</li>
 								<li class="nav-item">
 									<a class="nav-link" href="{{path('biens')}}">Nos biens</a>
 								</li>
-								{% if is_granted('ROLE_ADMIN') %}
-								{# <li class="nav-item">
-									<a class="nav-link" href="{{path('app_register')}}">Ajouter un employeur</a>
-								</li> #}
-								{% endif %}
+								
 								{% if app.user %}
 								<li class="nav-item">
 									<a class="nav-link" href="{{path('administration')}}">Administration</a>
@@ -80,7 +76,7 @@
 			{% block body %}{% endblock %}
 
 			<footer class="bg-dark">
-				<a href="" class="m-2">Nous contacter</a>
+				<a href="" class="m-2 text-white text-decoration-none">Nous contacter</a>
 			
 			</footer>
 			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>

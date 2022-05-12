@@ -3,9 +3,11 @@
 namespace App\Form;
 
 
+use App\Entity\Role;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -30,6 +32,11 @@ class RegistrationFormType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => "Email"
                 ])
+            // ->add('role', EntityType::class, array(
+            //     'class' => Role::class,
+            //     'choice_label' => 'role',
+            //     'multiple' => true
+            // ))
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
@@ -55,7 +62,8 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-        ;
+            ;
+        
     }
 
     public function configureOptions(OptionsResolver $resolver): void

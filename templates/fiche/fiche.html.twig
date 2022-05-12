@@ -1,0 +1,21 @@
+       
+<div class='grix xs2 container'>
+    <div class='row'>
+        <h3 class="text-center mb-5">Profil de {{user.nom}} {{user.prenom}}</h3>
+        
+        <div class="col-6 ">
+            <div><strong>Nom :</strong> {{user.nom}}</div>
+            <div><strong>Prénom :</strong> {{user.prenom}}</div>
+            <div><strong>Email :</strong> {{user.email}}</div>
+            <div><strong>Nombre des biens ({{user.biens|length}}) </strong></div>
+        </div>
+        <div class="col-6 text-end">
+            <a href="{{path('editpass')}}" class='btn ' id='btn_modifier'>Modifier le mot de passe</a>
+        </div>
+       
+    </div>
+</div>
+
+        
+
+  

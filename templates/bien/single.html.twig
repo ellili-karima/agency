@@ -19,7 +19,14 @@
             <div class="col-6">
                 <h1 class='text-center'>Prendre rendez-vous pour visiter le bien</h1>
                 {{ form_start(form) }}
-                    {{ form_widget(form) }}
+                    {# {{ form_widget(form) }} #}
+                    {{ form_row(form.nom) }}
+                    {{ form_row(form.prenom) }}
+                    {{ form_row(form.email) }}
+                    {{ form_row(form.tel) }}
+                    {{ form_row(form.date) }}
+                    {{ form_row(form.titre) == bien.titre }}
+                    
                     <button class="btn">{{ button_label|default('Envoyer') }}</button>
                 {{ form_end(form) }}
                     
@@ -55,79 +62,6 @@
         </div>
     
     </div>
-
-
-
-
-
-
-
-
-    
-    {# <div class='text-center'>
-        {% for photo in bien.photos %}
-            <img src="{{ asset('img/biens/' ~ photo.photo) }}" alt="" width="200px"> 
-        {% endfor %} 
-    </div>
-    <table class="table" width="500">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ bien.id }}</td>
-            </tr>
-            <tr>
-                <th>Titre</th>
-                <td>{{ bien.titre }}</td>
-            </tr>
-            <tr>
-                <th>Nbrepieces</th>
-                <td>{{ bien.nbrepieces }}</td>
-            </tr>
-            <tr>
-                <th>Surface</th>
-                <td>{{ bien.surface }} m2</td>
-            </tr>
-            <tr>
-                <th>Prix</th>
-                <td>{{ bien.prix }} €</td>
-            </tr>
-            <tr>
-                <th>Localisation</th>
-                <td>{{ bien.localisation }}</td>
-            </tr>
-            <tr>
-                <th>Type</th>
-                <td>{{ bien.type }}</td>
-            </tr>
-            <tr>
-                <th>Etage</th>
-                <td>{{ bien.etage }}</td>
-            </tr>
-            <tr>
-                <th>Transactiontype</th>
-                <td>{{ bien.transactiontype }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ bien.description }}</td>
-            </tr>
-            <tr>
-                <th>Dateconstruction</th>
-                <td>{{ bien.dateconstruction ? bien.dateconstruction|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Options</th>
-                <td> 
-                
-                
-                {# {% if not bien.options is empty %}
-                     {% for option in  bien.options.designation %}
-                    {{ option.designation}}  #}
-                 {# {% endfor %} 
-                {% endif %}  #}
-            {# </tr>
-        </tbody>
-    </table> #}
 
 </div>
 

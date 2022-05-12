@@ -27,7 +27,7 @@ class Bien
     #[ORM\Column(type: 'integer')]
     private $surface;
 
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'float')]
     private $prix;
 
     #[ORM\Column(type: 'string', length: 100)]
@@ -42,7 +42,7 @@ class Bien
     #[ORM\Column(type: 'string', length: 10)]
     private $transactiontype;
 
-    #[ORM\Column(type: 'string', length: 100)]
+    #[ORM\Column(type: 'text')]
     private $description;
 
     #[ORM\Column(type: 'datetime')]
@@ -315,5 +315,9 @@ class Bien
         return $this;
     }
     
+    public function __toString()
+  {
+      return $this->getTitre();
+  }
    
 }
