@@ -52,6 +52,9 @@
 							</td>
 						</tr>
 					{% endfor %}
+                    </tbody>
+                    </table>
+                    <p><strong>{{biens|length}}</strong> résultats </p>
 				{% endif %}
 
                 {% else %}
@@ -68,6 +71,7 @@
                         <th>Date de construction</th>
                         <th>Options</th>
                     </tr>
+                    
                     {% if biensuser %}
                         {% for bien in biensuser %}
                             <tr>
@@ -93,9 +97,11 @@
                                 </td>
                             </tr>
                         {% endfor %}
+                        </tbody>
+                        </table>
+                        <p><strong>{{biensuser|length}}</strong> résultats </p>
                 {% endif %}
             {% endif %}
-            </tbody>
-		</table>
+            
     </div>
 </div>

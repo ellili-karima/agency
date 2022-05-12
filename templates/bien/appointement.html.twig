@@ -43,6 +43,9 @@
                                             <td>{{appointement.titre.employeur.nom}}</td>
                                         </tr>
                                     {% endfor %}
+                                    </tbody>
+                                    </table>
+                                    <p><strong>{{listeAppointements|length}}</strong> résultats</p>
                                 {% endif %}
 
                         
@@ -75,10 +78,12 @@
                                         <td>{{appointement.prenom}}</td>
                                     </tr>
                                 {% endfor %}
+                                </tbody>
+                                </table>
+                                <p><strong>{{appointements|length}}</strong> résultats</p>
                             {% endif %}
                         {% endif %}
-                        </tbody>
-                    </table>
+                        
             </div>
         </div>
     </div>

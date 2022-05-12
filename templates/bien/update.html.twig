@@ -6,9 +6,9 @@
 <div class="container">
     <h1 class='text-center'>Modifier le Bien</h1>
 
-    {# {{ include('bien/_form.html.twig', {'button_label': 'Modifier'}) }}  #}
+    
     {% if is_granted('ROLE_ADMIN') %}
-            {{ include('bien/_form.html.twig' , {'button_label': 'Modifier'}) }}
+            {{ include('bien/_form.html.twig' , {'button_label': 'Valider'}) }}
        {% else %}
             {{ form_start(form) }}
                 {{ form_row(form.titre) }}

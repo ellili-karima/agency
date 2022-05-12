@@ -14,12 +14,14 @@ use App\Form\RechercheFormType;
 use App\Form\AppointementUserType;
 use App\Repository\BienRepository;
 use App\Repository\UserRepository;
+use App\Repository\PhotoRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\AppointementRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -167,8 +169,21 @@ class BienController extends AbstractController
      * @return Response
      */
     #[Route('bien/save', name: 'bien_save', methods: ["GET", "POST"])]
+    #[IsGranted(data:'ROLE_USER', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
     public function save(Request $request, ManagerRegistry $manager,UserInterface $user): Response
     {
+
+        //filtre de recherche
+        $filteredBiens = array();
+        $formRecherche = $this->createForm(RechercheFormType::class);
+        $formRecherche->handleRequest($request);
+        if ($formRecherche->isSubmitted() && $formRecherche->isValid()) {
+            //ici on recupere l'information du champs
+            $searchWord = $formRecherche->get('searchWord')->getData();
+            //on recupere les resultats obrenus et ça sera dans un array
+            $filteredBiens = $manager->getRepository(Bien::class)->findWithSearchword($searchWord);
+        }
+
         //recuperer le filtre de l'administartion du href
         $administration = $request->query->get("administration");
         if(!$administration){
@@ -229,7 +244,10 @@ class BienController extends AbstractController
             //on retourn l'utilisateur connecté
             'user' => $user,
             //on retourn un formilaire d'ajout de bien
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            //filtre de recherche
+            'filteredBiens' => $filteredBiens,
+            'formRecherche' => $formRecherche->createView(),
         ]);
     }
 
@@ -238,8 +256,20 @@ class BienController extends AbstractController
      * une fonction qui retourne un formulaire de mise à jour pour le bien
      */
     #[Route('/bien/{id}/update', name: "bien_update", requirements: ['id' => "[0-9]+"])]
+    #[IsGranted(data:'ROLE_USER', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
     public function edit(Request $request, Bien $bien, ManagerRegistry $manager, UserInterface $user): Response
     {
+        //filtre de recherche
+        $filteredBiens = array();
+        $formRecherche = $this->createForm(RechercheFormType::class);
+        $formRecherche->handleRequest($request);
+        if ($formRecherche->isSubmitted() && $formRecherche->isValid()) {
+            //ici on recupere l'information du champs
+            $searchWord = $formRecherche->get('searchWord')->getData();
+            //on recupere les resultats obrenus et ça sera dans un array
+            $filteredBiens = $manager->getRepository(Bien::class)->findWithSearchword($searchWord);
+        }
+
         //recuperer le filtre de l'administartion du href
         $administration = $request->query->get("administration");
         if(!$administration){
@@ -306,6 +336,9 @@ class BienController extends AbstractController
             //on retourn le formulaire de mise à jours du bien
             'form' => $form->createView(), 
             'user' => $user,
+            //filtre de recherche
+            'filteredBiens' => $filteredBiens,
+            'formRecherche' => $formRecherche->createView(),
         ]);
     }
 
@@ -314,6 +347,7 @@ class BienController extends AbstractController
      * fonction qui permet de supprimer un bien par son id
      */
     #[Route('bien/{id}/delete', name: 'bien_delete', methods: ['POST'])]
+    #[IsGranted(data:'ROLE_USER', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
     public function delete(Request $request, Bien $bien, BienRepository $bienRepository): Response
     {
         if ($this->isCsrfTokenValid('delete' . $bien->getId(), $request->request->get('_token'))) {
@@ -333,20 +367,22 @@ class BienController extends AbstractController
      * @return Response
      */
     #[Route('/administration', name: 'administration')]
+    #[IsGranted(data:'ROLE_USER', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
     public function administration(ManagerRegistry $manager, BienRepository $repository,AppointementRepository $apprepository, Request $request,UserInterface $user, UserRepository $users): Response
     {
+       
         //recuperer le filtre de l'administartion du href
         $administration = $request->query->get("administration");
         if(!$administration){
-             $administration = 'Biens';
+            $administration = 'Biens';
         }
 
         $filteredBiens = array();
-        $form = $this->createForm(RechercheFormType::class);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        $formRecherche = $this->createForm(RechercheFormType::class);
+        $formRecherche->handleRequest($request);
+        if ($formRecherche->isSubmitted() && $formRecherche->isValid()) {
             //ici on recupere l'information du champs
-            $searchWord = $form->get('searchWord')->getData();
+            $searchWord = $formRecherche->get('searchWord')->getData();
             //on recupere les resultats obrenus et ça sera dans un array
             $filteredBiens = $manager->getRepository(Bien::class)->findWithSearchword($searchWord);
         }
@@ -370,7 +406,9 @@ class BienController extends AbstractController
                 'user' =>$user,
                 //
                 'filteredBiens' => $filteredBiens,
-                'formRecherche' => $form->createView(),
+                'formRecherche' => $formRecherche->createView(),
+                
+                
         ]);
     }
 
@@ -383,8 +421,19 @@ class BienController extends AbstractController
      * @return Response
      */
     #[Route('/editpass', name: 'editpass')]
+    #[IsGranted(data:'ROLE_USER', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
     public function editpass(ManagerRegistry $manager, Request $request, UserPasswordHasherInterface $passHasher, UserInterface $userConnecte): Response
     {
+        //filtre de recherche
+        $filteredBiens = array();
+        $formRecherche = $this->createForm(RechercheFormType::class);
+        $formRecherche->handleRequest($request);
+        if ($formRecherche->isSubmitted() && $formRecherche->isValid()) {
+            //ici on recupere l'information du champs
+            $searchWord = $formRecherche->get('searchWord')->getData();
+            //on recupere les resultats obrenus et ça sera dans un array
+            $filteredBiens = $manager->getRepository(Bien::class)->findWithSearchword($searchWord);
+        }
         //recuperer le filtre de l'administartion du href
         $administration = $request->query->get("administration");
         if(!$administration){
@@ -406,7 +455,13 @@ class BienController extends AbstractController
 
         }
 
-        return $this->render('fiche/editpass.html.twig', ['administration' => $administration, 'user' => $userConnecte]);
+        return $this->render('fiche/editpass.html.twig', [
+            'administration' => $administration,
+            'user' => $userConnecte,
+            //filtre de recherche
+            'filteredBiens' => $filteredBiens,
+            'formRecherche' => $formRecherche->createView(),
+        ]);
     }
     
 
@@ -419,13 +474,25 @@ class BienController extends AbstractController
      * @return Response
      */
     #[Route('/addappointement', name: 'addAppointement')]
+    #[IsGranted(data:'ROLE_ADMIN', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
     public function appointement(Request $request, AppointementRepository $appointementRepository, UserInterface $user): Response
     {
-         //recuperer le filtre de l'administartion du href
-         $administration = $request->query->get("administration");
-         if(!$administration){
-              $administration = 'Appointement';
-         }
+        //filtre de recherche
+        $filteredBiens = array();
+        $formRecherche = $this->createForm(RechercheFormType::class);
+        $formRecherche->handleRequest($request);
+        if ($formRecherche->isSubmitted() && $formRecherche->isValid()) {
+            //ici on recupere l'information du champs
+            $searchWord = $formRecherche->get('searchWord')->getData();
+            //on recupere les resultats obrenus et ça sera dans un array
+            $filteredBiens = $manager->getRepository(Bien::class)->findWithSearchword($searchWord);
+        }
+
+        //recuperer le filtre de l'administartion du href
+        $administration = $request->query->get("administration");
+        if(!$administration){
+            $administration = 'Appointement';
+        }
         
             $appointement = new Appointement();
             //on crée un formulaire d'appointement
@@ -443,6 +510,9 @@ class BienController extends AbstractController
                 'administration' => $administration,
                 'form' => $form->createView(),
                 'user' => $user,
+                 //filtre de recherche
+                'filteredBiens' => $filteredBiens,
+                'formRecherche' => $formRecherche->createView(),
             
             
             ]);
@@ -458,13 +528,24 @@ class BienController extends AbstractController
      * @return Response
      */
     #[Route('/addappointementUser', name: 'addAppointementUser')]
-    public function appointementUser(Request $request, AppointementRepository $appointementRepository, UserInterface $user): Response
+    #[IsGranted(data:'ROLE_USER', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
+    public function appointementUser(ManagerRegistry $manager, Request $request, AppointementRepository $appointementRepository, UserInterface $user): Response
     {
-         //recuperer le filtre de l'administartion du href
-         $administration = $request->query->get("administration");
-         if(!$administration){
-              $administration = 'Appointement';
-         }
+        //filtre de recherche
+        $filteredBiens = array();
+        $formRecherche = $this->createForm(RechercheFormType::class);
+        $formRecherche->handleRequest($request);
+        if ($formRecherche->isSubmitted() && $formRecherche->isValid()) {
+            //ici on recupere l'information du champs
+            $searchWord = $formRecherche->get('searchWord')->getData();
+            //on recupere les resultats obrenus et ça sera dans un array
+            $filteredBiens = $manager->getRepository(Bien::class)->findWithSearchword($searchWord);
+        }
+        //recuperer le filtre de l'administartion du href
+        $administration = $request->query->get("administration");
+        if(!$administration){
+            $administration = 'Appointement';
+        }
 
         $appointementUser = new Appointement();
         //on crée un formulaire d'appointement
@@ -482,10 +563,15 @@ class BienController extends AbstractController
             'administration' => $administration,
             'form' => $form->createView(),
             'user' => $user,
+            //filtre de recherche
+            'filteredBiens' => $filteredBiens,
+            'formRecherche' => $formRecherche->createView(),
+        
            
           
         ]);
     }
+   
 
 
 }

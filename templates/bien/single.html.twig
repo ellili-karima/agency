@@ -6,6 +6,7 @@
 <div class="container">
     <div class="row">
         <div class="col-6">
+           
             {% if bien.photos %}
                 {% for photo in bien.photos %}
                     <img src="{{ asset('img/biens/' ~ photo.photo) }}" alt="" id="photo_single"> 

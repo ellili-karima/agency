@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Bien;
 use App\Entity\User;
 use App\Form\EditUserType;
+use App\Form\RechercheFormType;
 use App\Security\EmailVerifier;
 use PhpParser\Node\Stmt\Foreach_;
 use App\Form\RegistrationFormType;
@@ -38,8 +39,18 @@ class RegistrationController extends AbstractController
     
     #[Route('/register', name: 'app_register')]
     #[IsGranted(data:'ROLE_ADMIN', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, UserInterface $userConnecte): Response
+    public function register(ManagerRegistry $manager, Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, UserInterface $userConnecte): Response
     {
+        //filtre de recherche
+        $filteredBiens = array();
+        $formRecherche = $this->createForm(RechercheFormType::class);
+        $formRecherche->handleRequest($request);
+        if ($formRecherche->isSubmitted() && $formRecherche->isValid()) {
+            //ici on recupere l'information du champs
+            $searchWord = $formRecherche->get('searchWord')->getData();
+            //on recupere les resultats obrenus et ça sera dans un array
+            $filteredBiens = $manager->getRepository(Bien::class)->findWithSearchword($searchWord);
+        }
         //recuperer le filtre de l'administartion du href
         $administration = $request->query->get("administration");
         if(!$administration){
@@ -79,7 +90,10 @@ class RegistrationController extends AbstractController
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
             'administration' => $administration,
-            'user' => $userConnecte
+            'user' => $userConnecte,
+            //filtre de recherche
+            'filteredBiens' => $filteredBiens,
+            'formRecherche' => $formRecherche->createView(),
         ]);
     }
 
@@ -104,9 +118,19 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register/{id}/update', name: "user_update",methods: ['GET', 'POST'], requirements: ['id' => "[0-9]+"])]
-    //#[IsGranted(data:'ROLE_ADMIN', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
+    #[IsGranted(data:'ROLE_ADMIN', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
     public function update(ManagerRegistry $manager, User $user,Request $request, UserInterface $userConnecte): Response
     {
+        //filtre de recherche
+        $filteredBiens = array();
+        $formRecherche = $this->createForm(RechercheFormType::class);
+        $formRecherche->handleRequest($request);
+        if ($formRecherche->isSubmitted() && $formRecherche->isValid()) {
+            //ici on recupere l'information du champs
+            $searchWord = $formRecherche->get('searchWord')->getData();
+            //on recupere les resultats obrenus et ça sera dans un array
+            $filteredBiens = $manager->getRepository(Bien::class)->findWithSearchword($searchWord);
+        }
         //recuperer le filtre de l'administartion du href
         $administration = $request->query->get("administration");
         if(!$administration){
@@ -130,11 +154,15 @@ class RegistrationController extends AbstractController
             // 'registrationForm' => $form->createView(),
             'userForm'  => $form->createView(),
             'administration' => $administration,
-            'user' => $userConnecte
+            'user' => $userConnecte,
+            //filtre de recherche
+            'filteredBiens' => $filteredBiens,
+            'formRecherche' => $formRecherche->createView(),
         ]);
     }
     
     #[Route('/employeurs/{id}/delete', name: "user_delete",methods: ['POST'], requirements: ['id' => "[0-9]+"])]
+    #[IsGranted(data:'ROLE_ADMIN', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
     public function delete(Request $request, User $user, UserRepository $userRepository, UserInterface $admin)
     {
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
