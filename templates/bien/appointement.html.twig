@@ -3,11 +3,17 @@
 		<div class='row'>
 			<div class='col-12'>
                 <div class='col-12 text-end mb-5'>
+                {% if is_granted('ROLE_ADMIN') %}
                     <a href="{{path('addAppointement')}}"><button class='btn' id="btn_ajouter">Ajouter un RDV</button></a>
+                {% else %}
+                    <a href="{{path('addAppointementUser')}}"><button class='btn' id="btn_ajouter">Ajouter un RDV</button></a>
+                {% endif %}
                 </div>
                 <h3 class='text-center m-5'>La liste des rendez-vous</h3>
                     <table class='table'>
-                    <thead>
+                    
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <thead>
                         <tr>
                             <th>ID</th>
                             <th>Date</th> 
@@ -16,29 +22,43 @@
                             <th>Téléphone</th>
                             <th>Nom</th>
                             <th>Prénom</th>
+                            <th>Employés</th>
                         </tr>
-                    </thead>
-                        {% if is_granted('ROLE_ADMIN') %}
-                        <tbody> 
-                            {% if listeAppointements %}
-            
-                                {% for appointement in listeAppointements %}
-                                
-                                    <tr>
-                                        <td>{{appointement.id}}</td>
-                                        <td>{{appointement.date|date('d/m/Y H:m:s')}}</td>
-                                        {# le titre du bien qui concerne ce rendez-vous #}
-                                        <td>{{appointement.titre}}</td>
-                                        <td>{{appointement.email}}</td>
-                                        <td>{{appointement.tel}}</td>
-                                        <td>{{appointement.nom}}</td>
-                                        <td>{{appointement.prenom}}</td>
-                                    </tr>
-                                {% endfor %}
-                            {% endif %}
+                        </thead>
+                            <tbody> 
+                                {% if listeAppointements %}
+                
+                                    {% for appointement in listeAppointements %}
+                                    
+                                        <tr>
+                                            <td>{{appointement.id}}</td>
+                                            <td>{{appointement.date|date('d/m/Y H:m:s')}}</td>
+                                            {# le titre du bien qui concerne ce rendez-vous #}
+                                            <td>{{appointement.titre}}</td>
+                                            <td>{{appointement.email}}</td>
+                                            <td>{{appointement.tel}}</td>
+                                            <td>{{appointement.nom}}</td>
+                                            <td>{{appointement.prenom}}</td>
+                                            {# le nom de l'employé qui gere le bien de ce rendez-vous #}
+                                            <td>{{appointement.titre.employeur.nom}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
 
                         
                         {% else %}
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Date</th> 
+                                    <th>Titre</th>
+                                    <th>Email</th>
+                                    <th>Téléphone</th>
+                                    <th>Nom</th>
+                                    <th>Prénom</th>
+                                </tr>
+                            </thead>
+                            <tbody> 
                         
                             {% if appointements %}
                 
@@ -48,7 +68,7 @@
                                         <td>{{appointement.id}}</td>
                                         <td>{{appointement.date|date('d/m/Y H:m:s')}}</td>
                                         {# le titre du bien qui concerne ce rendez-vous #}
-                                        <td>{{biens[appointement.id].titre}}</td>
+                                        <td>{{appointement.titre}}</td>
                                         <td>{{appointement.email}}</td>
                                         <td>{{appointement.tel}}</td>
                                         <td>{{appointement.nom}}</td>

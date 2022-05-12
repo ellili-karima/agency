@@ -317,7 +317,9 @@ class Bien
     
     public function __toString()
   {
-      return $this->getTitre();
+      return $this->getTitre();    
+           
   }
+ 
    
 }

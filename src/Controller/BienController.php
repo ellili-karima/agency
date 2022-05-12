@@ -10,6 +10,7 @@ use App\Entity\Optionbien;
 use App\Entity\Appointement;
 use App\Form\SearchFormType;
 use App\Form\AppointementType;
+use App\Form\AppointementUserType;
 use App\Repository\BienRepository;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -411,20 +412,59 @@ class BienController extends AbstractController
          if(!$administration){
               $administration = 'Appointement';
          }
+        
+            $appointement = new Appointement();
+            //on crée un formulaire d'appointement
+            $form = $this->createForm(AppointementType::class, $appointement);
+            $form->handleRequest($request);
+            
+            if ($form->isSubmitted() && $form->isValid()) {
+            
+                //on insére les donneés envoyées par le formulaire 
+                $appointementRepository->add($appointement);
+                $this->addFlash("success", "Le rendez-vous a été envoié avec succès");
+                return $this->redirectToRoute('administration', ['administration'=>'Appointement'], Response::HTTP_SEE_OTHER);
+            }
+            return $this->render('bien/addAppointement.html.twig', [
+                'administration' => $administration,
+                'form' => $form->createView(),
+                'user' => $user,
+            
+            
+            ]);
+       
+    }
 
-        $appointement = new Appointement();
+     /**
+     * cette fonction permet aux Employés connectés de prendre un rendez-vous
+     *
+     * @param Request $request
+     * @param AppointementRepository $appointementRepository
+     * @param UserInterface $user
+     * @return Response
+     */
+    #[Route('/addappointementUser', name: 'addAppointementUser')]
+    public function appointementUser(Request $request, AppointementRepository $appointementRepository, UserInterface $user): Response
+    {
+         //recuperer le filtre de l'administartion du href
+         $administration = $request->query->get("administration");
+         if(!$administration){
+              $administration = 'Appointement';
+         }
+
+        $appointementUser = new Appointement();
         //on crée un formulaire d'appointement
-        $form = $this->createForm(AppointementType::class, $appointement);
+        $form = $this->createForm(AppointementUserType::class, $appointementUser);
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
            
             //on insére les donneés envoyées par le formulaire 
-            $appointementRepository->add($appointement);
-          
+            $appointementRepository->add($appointementUser);
+            $this->addFlash("success", "Le rendez-vous a été envoié avec succès");
             return $this->redirectToRoute('administration', ['administration'=>'Appointement'], Response::HTTP_SEE_OTHER);
         }
-        return $this->render('bien/addAppointement.html.twig', [
+        return $this->render('bien/addAppointementUser.html.twig', [
             'administration' => $administration,
             'form' => $form->createView(),
             'user' => $user,
