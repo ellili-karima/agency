@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -87,13 +88,33 @@ class PhotoController extends AbstractController
     }
 
     #[Route('/photo/{id}/delete', name: 'delete_photo', methods: ['POST'], requirements:['id'=> "[0-9]+"])]
-    public function delete(Request $request, Photo $photo , PhotoRepository $photoRepository): Response
+    public function delete(ManagerRegistry $manager, Request $request, Photo $photo , PhotoRepository $photoRepository): Response
     {
-      
-
+        $data = Json_decode($request->getContent(), true);
+        //on verifier si le token est valide
         if ($this->isCsrfTokenValid('delete'.$photo->getId(), $request->request->get('_token'))) {
-            $photoRepository->remove($photo);
+
+            //on récupère le nom de l'image
+            $nom = $photo->getPhoto();
+            //on supprime le fichier
+            unlink($this->getParameter('upload_dir') . '/' . $nom);
+
+            //on supprime l'entrée de la base
+            $entityManager = $manager->getManager();
+            $entityManager->remove($photo);
+            $entityManager->flush();
+
+            //on répont en Json_decode
+            // return new JsonResponse(['success' => 1]);
+            $this->addFlash("success", "La photo a été supprimé avec succès");
+            return $this->redirectToRoute('administration', ['administration' => 'Biens'], Response::HTTP_SEE_OTHER);
+        } else {
+            return new JsonResponse(['error' => 'Token invalide'], 400);
         }
+
+        // if ($this->isCsrfTokenValid('delete'.$photo->getId(), $request->request->get('_token'))) {
+        //     $photoRepository->remove($photo);
+        // }
 
         return $this->redirectToRoute('biens', [], Response::HTTP_SEE_OTHER);
     }
