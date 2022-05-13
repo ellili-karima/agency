@@ -24,7 +24,7 @@ class Bien
     #[ORM\Column(type: 'integer')]
     private $nbrepieces;
 
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'float')]
     private $surface;
 
     #[ORM\Column(type: 'float')]
