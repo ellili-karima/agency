@@ -14,7 +14,6 @@ use App\Form\RechercheFormType;
 use App\Form\AppointementUserType;
 use App\Repository\BienRepository;
 use App\Repository\UserRepository;
-use App\Repository\PhotoRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\AppointementRepository;
 use Symfony\Component\HttpFoundation\Request;

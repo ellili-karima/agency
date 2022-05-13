@@ -1,7 +1,11 @@
-<div >
+<div class="d-flex justify-content-between">
 	<a href="{{path('bien_save')}}">
 		<button class='btn' id="btn_ajouter">Ajouter un bien</button>
 	</a>
+
+    <a href="{{path('app_option_index')}}">
+        <button class='btn' id="btn_ajouter">Gérer les options</button>
+    </a>
 </div>
 <div>
 	<h2 class='mb-4 text-center'>Les propriétes</h2>
@@ -22,7 +26,7 @@
 					<th>Description</th>
 					<th>Date de construction</th>
 					<th>employés</th>
-					<th><a href="{{path('app_option_index')}}">Options</a></th>
+					<th>Options</th>
 				</tr>
 
             </thead>
@@ -72,7 +76,7 @@
                         <th>Transaction Type</th>
                         <th>Description</th>
                         <th>Date de construction</th>
-                        <th><a href="{{path('app_option_index')}}">Options</a></th>
+                        <th>Options</th>
                     </tr>
                     
                     {% if biensuser %}
