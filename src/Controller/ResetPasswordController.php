@@ -22,7 +22,6 @@ use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
 
 #[Route('/reset-password')]
-#[IsGranted(data:'ROLE_USER', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
 class ResetPasswordController extends AbstractController
 {
     use ResetPasswordControllerTrait;
