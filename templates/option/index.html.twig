@@ -1,9 +1,12 @@
-{% extends 'base.html.twig' %}
+{% extends 'bien/administration.html.twig' %}
 
-{% block title %}Option index{% endblock %}
+{% block title %}Options{% endblock %}
 
 {% block body %}
-    <h1>Option index</h1>
+    <div class='container'>
+    <h1 class='text-center'>Les options des biens</h1>
+    
+    <button class='btn' id='btn_ajouter'><a href="{{ path('app_option_new') }}" class="link-light text-decoration-none">Ajouter une option</a></button>
 
     <table class="table">
         <thead>
@@ -19,8 +22,7 @@
                 <td>{{ option.id }}</td>
                 <td>{{ option.designation }}</td>
                 <td>
-                    <a href="{{ path('app_option_show', {'id': option.id}) }}">show</a>
-                    <a href="{{ path('app_option_edit', {'id': option.id}) }}">edit</a>
+                    {{ include('option/_delete_form.html.twig') }}
                 </td>
             </tr>
         {% else %}
@@ -30,6 +32,5 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_option_new') }}">Create new</a>
+    </div>
 {% endblock %}

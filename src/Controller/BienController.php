@@ -475,7 +475,7 @@ class BienController extends AbstractController
      */
     #[Route('/addappointement', name: 'addAppointement')]
     #[IsGranted(data:'ROLE_ADMIN', message: "Vous n'avez pas les autorisations nécessaires", statusCode: 403)]
-    public function appointement(Request $request, AppointementRepository $appointementRepository, UserInterface $user): Response
+    public function appointement(ManagerRegistry $manager,Request $request, AppointementRepository $appointementRepository, UserInterface $user): Response
     {
         //filtre de recherche
         $filteredBiens = array();

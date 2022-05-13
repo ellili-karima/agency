@@ -26,7 +26,6 @@
 							<td>{{ employeur.email}}</td>
 							<td>{{ employeur.nom}}</td>
 							<td>{{ employeur.prenom}}</td>
-							{# <td>{{ employeur.roles ? employeur.roles|json_encode : ''}}</td> #}
 							<td>
 								{% for role in employeur.roles %}
 									{% if role == "ROLE_ADMIN" %}

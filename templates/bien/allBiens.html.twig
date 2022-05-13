@@ -1,4 +1,4 @@
-<div class='col-12 text-end mb-5'>
+<div >
 	<a href="{{path('bien_save')}}">
 		<button class='btn' id="btn_ajouter">Ajouter un bien</button>
 	</a>
@@ -22,7 +22,7 @@
 					<th>Description</th>
 					<th>Date de construction</th>
 					<th>employés</th>
-					<th>Options</th>
+					<th><a href="{{path('app_option_index')}}">Options</a></th>
 				</tr>
 
             </thead>
@@ -41,7 +41,10 @@
 							<td>{{bien.description}}</td>
 							<td>{{bien.dateconstruction|date('d/m/Y')}}</td>
 							{# le nom le l'employeur qui gere ce bien #}
-							<td>{{bien.employeur.nom}}</td>
+                            <td>{{bien.employeur.nom}}</td>
+                            
+                            
+							
 							<td>
 
 								<a href="{{path('bien_update', {id: bien.id})}}" class='mb-2'>
@@ -69,7 +72,7 @@
                         <th>Transaction Type</th>
                         <th>Description</th>
                         <th>Date de construction</th>
-                        <th>Options</th>
+                        <th><a href="{{path('app_option_index')}}">Options</a></th>
                     </tr>
                     
                     {% if biensuser %}

@@ -23,7 +23,9 @@
 		<div class='container mt-0'>
 
 			<div class='row'>
+			{# //////////////////////Menu////////////////////////#}
 				{{ include('bien/_menu.html.twig') }}
+			{# ///////////////////////////////////////////////////#}
 
 				<div class='col-10'>
 					<div class='row'>
@@ -46,7 +48,7 @@
 								</div>
 							{% endfor %}
 						</div>
-				
+								{# //////////////////////filtre de recherche////////////////////////#}
 							<div class='col-12 d-flex justify-content-between mt-5 mb-5'>
 								{{form_start(formRecherche)}}
 										<div class='d-flex'>
